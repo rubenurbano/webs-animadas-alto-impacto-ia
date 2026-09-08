@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial Maestro · Webs Animadas de Alto Impacto con IA</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#0b1322; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height:1.65; font-size:16px; -webkit-text-size-adjust:100%;
+  background-image:radial-gradient(circle at 12% 8%, rgba(0,212,255,.07), transparent 42%),
+                   radial-gradient(circle at 88% 92%, rgba(168,85,247,.07), transparent 45%);
+  background-attachment:fixed;
+}
+/* ---------- Barra de progreso ---------- */
+#progressBar{
+  position:fixed; top:0; left:0; height:4px; width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  z-index:1200; box-shadow:0 0 12px rgba(0,212,255,.7); transition:width .12s linear;
+}
+/* ---------- Navbar ---------- */
+#navbar{
+  position:fixed; top:4px; left:0; right:0; z-index:1100;
+  background:rgba(10,14,26,.94); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex; align-items:center; gap:6px; overflow-x:auto; overflow-y:hidden;
+  padding:9px 12px; scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-inner::-webkit-scrollbar{height:5px}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-btn{
+  flex:0 0 auto; background:transparent; color:var(--muted);
+  border:1px solid transparent; border-radius:8px; cursor:pointer;
+  font-family:inherit; font-size:13.5px; font-weight:600;
+  padding:8px 13px; white-space:nowrap; transition:.2s;
+}
+.nav-btn:hover{color:var(--text); background:rgba(0,212,255,.08); border-color:var(--border)}
+.nav-btn.active{
+  color:#04121c; background:linear-gradient(135deg,var(--accent),#7dd3fc);
+  border-color:var(--accent); box-shadow:0 0 16px rgba(0,212,255,.45);
+}
+.nav-btn.credit.active{background:linear-gradient(135deg,var(--purple),#d8b4fe);color:#160a26;border-color:var(--purple);box-shadow:0 0 16px rgba(168,85,247,.45)}
+.nav-btn.credit{border-color:#3b2a5f;color:#c4a7f5}
+/* ---------- Layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:84px 16px 40px}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .page.active{animation:none}
+  html{scroll-behavior:auto}
+  *{transition-duration:.01ms !important}
+}
+/* ---------- Portada ---------- */
+.cover-wrap{width:100%;margin:0 0 22px}
+svg.cover{
+  display:block; width:100%; height:auto; aspect-ratio:16/9;
+  border:1px solid var(--border); border-radius:12px;
+  background:#0a0e1a; box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(0,212,255,.08) inset;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,212,255,.1);border:1px solid var(--accent);color:var(--accent);
+  padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1.title{
+  font-size:clamp(1.75rem,4.6vw,3.1rem); line-height:1.15; font-weight:800; letter-spacing:-.5px;
+  background:linear-gradient(120deg,#ffffff 10%,var(--accent) 55%,var(--purple) 95%);
+  -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:12px;
+}
+.subtitle{font-size:clamp(1rem,2.4vw,1.32rem);color:#bae6fd;font-weight:600;margin-bottom:16px}
+.description{color:var(--muted);font-size:clamp(.95rem,2vw,1.06rem);max-width:900px;margin-bottom:22px}
+.quote{
+  border-left:4px solid var(--accent); background:linear-gradient(90deg,rgba(0,212,255,.09),rgba(15,23,42,.4));
+  padding:18px 22px;border-radius:0 12px 12px 0;margin:0 0 24px;
+}
+.quote p{font-size:clamp(1rem,2.3vw,1.22rem);font-style:italic;color:#e0f2fe;font-weight:600}
+.quote span{display:block;margin-top:8px;font-size:.82rem;color:var(--dim);letter-spacing:1.2px;text-transform:uppercase}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:20px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 14px;position:relative;overflow:hidden}
+.metric::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple))}
+.metric .num{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.1}
+.metric .lbl{font-size:.78rem;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;margin-top:5px}
+.stamp{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--border);
+  color:var(--muted);padding:7px 13px;border-radius:999px;font-size:.84rem;font-weight:600
+}
+.chip b{color:var(--accent);font-weight:700}
+/* ---------- Secciones ---------- */
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.sec-icon{
+  width:52px;height:52px;flex:0 0 52px;display:grid;place-items:center;font-size:1.5rem;
+  background:linear-gradient(135deg,rgba(0,212,255,.16),rgba(168,85,247,.14));
+  border:1px solid var(--border);border-radius:12px
+}
+.sec-head h2{font-size:clamp(1.35rem,3.4vw,1.95rem);font-weight:800;letter-spacing:-.3px}
+.sec-kicker{font-size:.76rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:4px}
+.sec-lead{color:var(--muted);margin:12px 0 24px;max-width:940px;font-size:1.02rem}
+h3{font-size:1.14rem;font-weight:700;margin:26px 0 12px;color:#e0f2fe;display:flex;align-items:center;gap:9px}
+h3::before{content:'';width:4px;height:20px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--purple))}
+h4{font-size:.98rem;font-weight:700;color:var(--accent);margin:14px 0 7px;letter-spacing:.3px}
+p{margin-bottom:12px;color:#cbd5e1}
+ul,ol{margin:0 0 14px 22px;color:#cbd5e1}
+li{margin-bottom:7px}
+strong{color:#fff}
+em{color:#bae6fd}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card.soft{background:var(--card2)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.mini{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:17px;transition:.22s}
+.mini:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.4)}
+.mini .ic{font-size:1.4rem;margin-bottom:8px;display:block}
+.mini h4{margin:0 0 6px;color:#fff;font-size:1rem}
+.mini p{font-size:.92rem;color:var(--muted);margin:0}
+/* Niveles */
+.level{border-left:4px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;padding:16px 18px;margin-bottom:12px;border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.level.l2{border-left-color:var(--green)}
+.level.l3{border-left-color:var(--purple)}
+.level .tag{font-size:.72rem;letter-spacing:1.6px;text-transform:uppercase;font-weight:800;color:var(--accent)}
+.level.l2 .tag{color:var(--green)} .level.l3 .tag{color:var(--purple)}
+.level h4{margin:6px 0 6px;color:#fff;font-size:1.02rem}
+.level p{margin:0;font-size:.95rem;color:var(--muted)}
+/* Callouts */
+.callout{border-radius:12px;padding:15px 17px 15px 15px;margin:16px 0;border:1px solid;display:flex;gap:13px;align-items:flex-start}
+.callout .ci{font-size:1.25rem;line-height:1.4;flex:0 0 auto}
+.callout .ct{font-size:.74rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.callout p{margin:0;font-size:.95rem;color:#cbd5e1}
+.co-info{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.45)} .co-info .ct{color:var(--accent)}
+.co-ok{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.45)} .co-ok .ct{color:var(--green)}
+.co-warn{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.45)} .co-warn .ct{color:var(--amber)}
+.co-err{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.45)} .co-err .ct{color:var(--red)}
+/* Tablas */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:16px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:.93rem}
+th{background:rgba(0,212,255,.1);color:var(--accent);text-align:left;padding:12px 14px;font-size:.78rem;letter-spacing:1.1px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:12px 14px;border-bottom:1px solid rgba(30,58,95,.55);color:#cbd5e1;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(0,212,255,.04)}
+td b{color:#fff}
+/* Pasos */
+.steps{counter-reset:st;margin:16px 0}
+.step{position:relative;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px 16px 62px;margin-bottom:12px}
+.step::before{
+  counter-increment:st;content:counter(st);position:absolute;left:16px;top:16px;
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--purple));color:#04121c;font-weight:800;font-size:.95rem
+}
+.step h4{margin:0 0 5px;color:#fff;font-size:1rem}
+.step p{margin:0;font-size:.94rem;color:var(--muted)}
+/* Acordeón */
+details{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+details[open]{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,212,255,.18),0 10px 26px rgba(0,0,0,.35)}
+summary{list-style:none;cursor:pointer;padding:15px 18px;display:flex;align-items:center;gap:12px;font-weight:700;color:#e2e8f0;transition:.2s}
+summary::-webkit-details-marker{display:none}
+summary:hover{background:rgba(0,212,255,.06)}
+summary .pn{flex:0 0 auto;background:rgba(0,212,255,.14);border:1px solid var(--accent);color:var(--accent);font-size:.72rem;font-weight:800;padding:4px 9px;border-radius:7px;letter-spacing:.8px}
+summary .arw{margin-left:auto;color:var(--accent);transition:transform .25s;font-size:.9rem}
+details[open] summary .arw{transform:rotate(90deg)}
+.dbody{padding:0 18px 18px}
+/* Prompts */
+.prompt-box{position:relative;background:#080d18;border:1px solid var(--border);border-radius:10px;padding:16px 16px 16px}
+.prompt-text{white-space:pre-wrap;word-break:break-word;font-family:'Consolas','Courier New',monospace;font-size:.88rem;line-height:1.75;color:#bae6fd;margin:0}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:7px;margin-top:12px;background:rgba(0,212,255,.1);
+  border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:8px 14px;
+  font-family:inherit;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s
+}
+.copy-btn:hover{background:var(--accent);color:#04121c}
+.copy-btn.done{background:rgba(34,197,94,.18);border-color:var(--green);color:var(--green)}
+/* Stepper interactivo */
+.flow-frame{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:20px 16px;margin-bottom:0}
+.flow-track{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:8px}
+.fnode{flex:1 1 0;min-width:118px;text-align:center;position:relative;padding:0 4px}
+.fnode:not(:last-child)::after{content:'';position:absolute;top:21px;left:60%;width:80%;height:2px;background:var(--border);z-index:0}
+.fnode.done:not(:last-child)::after{background:linear-gradient(90deg,var(--green),var(--accent))}
+.fcircle{
+  position:relative;z-index:1;width:44px;height:44px;margin:0 auto 9px;border-radius:50%;
+  display:grid;place-items:center;font-weight:800;font-size:.95rem;
+  background:var(--card);border:2px solid var(--border);color:var(--dim);transition:.25s
+}
+.fnode.done .fcircle{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.1)}
+.fnode.active .fcircle{border-color:var(--accent);color:#04121c;background:linear-gradient(135deg,var(--accent),#7dd3fc);box-shadow:0 0 20px rgba(0,212,255,.6);transform:scale(1.1)}
+.flabel{font-size:.79rem;font-weight:700;color:var(--muted);line-height:1.3}
+.fnode.active .flabel{color:var(--accent)}
+.stepper-controls{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px;padding-top:16px;border-top:1px solid var(--border)
+}
+.btn{
+  background:rgba(0,212,255,.1);border:1px solid var(--accent);color:var(--accent);
+  border-radius:9px;padding:10px 16px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s;
+  min-height:44px;display:inline-flex;align-items:center;gap:7px
+}
+.btn:hover:not(:disabled){background:var(--accent);color:#04121c;box-shadow:0 0 16px rgba(0,212,255,.45)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;border-color:var(--border);color:var(--muted)}
+.btn.ghost:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.06);box-shadow:none}
+.slider-wrap{flex:1 1 200px;min-width:170px;display:flex;align-items:center;gap:10px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:5px;background:var(--border);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 12px rgba(0,212,255,.7);border:2px solid #04121c}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #04121c}
+.step-ind{font-size:.85rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.step-ind b{color:var(--accent)}
+.stepper-panel{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:18px;margin-top:14px;box-shadow:0 0 0 1px rgba(0,212,255,.12)}
+.sp-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.pill{font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:5px 11px;border-radius:999px;border:1px solid}
+.pill.p1{background:rgba(0,212,255,.12);border-color:var(--accent);color:var(--accent)}
+.pill.p2{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+.pill.p3{background:rgba(168,85,247,.12);border-color:var(--purple);color:#d8b4fe}
+.pill.p4{background:rgba(245,158,11,.12);border-color:var(--amber);color:var(--amber)}
+.stepper-panel h4{margin:0 0 8px;font-size:1.16rem;color:#fff}
+.stepper-panel p{font-size:.96rem;color:var(--muted);margin-bottom:10px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:12px}
+.kv div{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:11px 13px}
+.kv span{display:block;font-size:.7rem;letter-spacing:1.3px;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:4px}
+.kv b{color:#e0f2fe;font-size:.92rem;font-weight:600}
+/* Demos interactivos */
+.demo{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:18px;margin:16px 0}
+.demo-bar{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}
+.tbtn{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:9px 14px;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s;min-height:42px}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:#04121c;box-shadow:0 0 14px rgba(0,212,255,.4)}
+.demo-stage{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;min-height:210px;padding:10px 0}
+.mock{border:2px solid var(--border);border-radius:9px;overflow:hidden;background:#0a0e1a;display:flex;flex-direction:column;transition:height .4s ease,width .4s ease}
+.mock.r11{width:180px;height:180px}
+.mock.r12{width:150px;height:300px}
+.mock.r916{width:126px;height:224px}
+.msec{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px;border-bottom:1px dashed rgba(30,58,95,.7)}
+.msec:last-child{border-bottom:none}
+.msec.dark{background:#0b1a2e}
+.msec.light{background:#dbe4f0}
+.msec.mono{background:#0b1a2e}
+.mbar{height:6px;border-radius:4px;width:60%}
+.dark .mbar{background:rgba(0,212,255,.55)}
+.light .mbar{background:#334155}
+.mono .mbar{background:rgba(100,116,139,.45)}
+.demo-note{margin-top:14px;font-size:.92rem;color:var(--muted);background:var(--card);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;padding:12px 14px}
+.demo-note b{color:var(--accent)}
+/* Loop diagram */
+.loopfig{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:12px 0}
+.frame{width:104px;height:60px;border:2px solid var(--accent);border-radius:8px;background:#0b1a2e;display:grid;place-items:center;font-weight:800;color:var(--accent);font-size:.85rem;box-shadow:0 0 16px rgba(0,212,255,.22)}
+.looparrow{font-size:1.6rem;color:var(--purple);animation:spinA 3.4s linear infinite}
+@keyframes spinA{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+/* Checklist */
+.check-list{display:grid;gap:9px}
+.chk{display:flex;align-items:flex-start;gap:12px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.2s}
+.chk:hover{border-color:var(--accent)}
+.chk input{width:20px;height:20px;flex:0 0 20px;margin-top:2px;accent-color:var(--green);cursor:pointer}
+.chk span{font-size:.93rem;color:#cbd5e1}
+.chk.ok{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.06)}
+.chk.ok span{color:#bbf7d0;text-decoration:line-through;text-decoration-color:rgba(34,197,94,.6)}
+.counter{font-size:.9rem;color:var(--muted);margin-top:12px;font-weight:700}
+.counter b{color:var(--green);font-size:1.05rem}
+.meter{height:8px;border-radius:5px;background:var(--border);overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s}
+/* Glosario */
+.search{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;color:var(--text);font-family:inherit;font-size:.95rem;margin-bottom:16px}
+.search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.14)}
+.glos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.term{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:3px solid var(--purple)}
+.term h4{margin:0 0 6px;color:#fff;font-size:1rem}
+.term .en{font-size:.74rem;letter-spacing:1px;text-transform:uppercase;color:var(--purple);font-weight:700;display:block;margin-bottom:7px}
+.term p{margin:0;font-size:.92rem;color:var(--muted)}
+.no-res{color:var(--amber);font-size:.92rem;padding:10px 0}
+/* Credits */
+.credit-box{text-align:center;background:linear-gradient(160deg,rgba(168,85,247,.1),rgba(0,212,255,.06));border:1px solid var(--border);border-radius:14px;padding:28px 20px;margin-top:22px}
+.credit-box .au{font-size:clamp(1.4rem,4vw,2.1rem);font-weight:800;background:linear-gradient(120deg,#fff,var(--accent),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;margin:8px 0}
+.latin{font-style:italic;color:#d8b4fe;letter-spacing:.6px;margin-top:14px;font-size:1.02rem}
+/* Footer */
+footer{border-top:1px solid var(--border);background:rgba(15,23,42,.6);margin-top:34px;padding:26px 18px;text-align:center}
+footer p{font-size:.88rem;color:var(--muted);margin:5px 0}
+footer .fx{color:var(--accent);font-weight:700}
+footer .lat{font-style:italic;color:#d8b4fe;margin-top:10px}
+/* Botón subir */
+#toTop{
+  position:fixed;bottom:20px;right:18px;width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));border:none;color:#04121c;
+  font-size:1.25rem;font-weight:800;cursor:pointer;z-index:1150;opacity:0;pointer-events:none;
+  transition:.28s;box-shadow:0 8px 24px rgba(0,0,0,.5)
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-4px) scale(1.05)}
+@media (max-width:640px){
+  main{padding:78px 12px 30px}
+  .nav-btn{font-size:12.5px;padding:8px 11px}
+  .card{padding:16px}
+  .step{padding:14px 14px 14px 58px}
+  ul,ol{margin-left:18px}
+  .fnode{min-width:104px}
+  .flabel{font-size:.72rem}
+  .stepper-controls{gap:8px}
+  .btn{flex:1 1 auto;justify-content:center;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<!-- ==================== SVG MAESTRO (symbol reutilizable) ==================== -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true" focusable="false">
+<symbol id="cover-art" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0e1a"/><stop offset=".5" stop-color="#0d1526"/><stop offset="1" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <linearGradient id="accGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00d4ff"/><stop offset="1" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="thumbGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16233c"/><stop offset="1" stop-color="#0d1524"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#00d4ff" stop-opacity=".55"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowP" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#a855f7" stop-opacity=".45"/><stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="gridP" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#1e3a5f" stroke-width="1" opacity=".38"/>
+    </pattern>
+    <path id="flowLine" d="M192 250 H1408"/>
+    <path id="loopTop" d="M1212 452 C1258 424 1342 424 1388 452"/>
+  </defs>
+
+  <!-- Fondo -->
+  <rect width="1600" height="900" fill="url(#bgGrad)"/>
+  <rect width="1600" height="900" fill="url(#gridP)" opacity=".55"/>
+  <ellipse cx="290" cy="180" rx="330" ry="210" fill="url(#glowA)" opacity=".3">
+    <animate attributeName="opacity" values=".18;.4;.18" dur="9s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="1330" cy="740" rx="330" ry="220" fill="url(#glowP)" opacity=".28">
+    <animate attributeName="opacity" values=".14;.36;.14" dur="11s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Marco -->
+  <rect x="30" y="30" width="1540" height="840" rx="20" fill="none" stroke="#1e3a5f" stroke-width="2"/>
+  <rect x="30" y="30" width="1540" height="6" rx="3" fill="url(#accGrad)" opacity=".9"/>
+
+  <!-- Cabecera -->
+  <text x="80" y="104" font-family="'Segoe UI',system-ui,sans-serif" font-size="34" font-weight="800" fill="#eaf7ff" letter-spacing="-.5">TUTORIAL MAESTRO · WEBS ANIMADAS CON IA</text>
+  <text x="80" y="140" font-family="'Segoe UI',system-ui,sans-serif" font-size="19" fill="#7dd3fc" opacity=".85">Dirección creativa: Referencia → Maqueta → Assets limpios → Loop → Código → Despliegue</text>
+  <rect x="1272" y="74" width="248" height="46" rx="23" fill="rgba(0,212,255,.12)" stroke="#00d4ff" stroke-width="1.6"/>
+  <text x="1396" y="104" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#00d4ff" letter-spacing="1.6">MÉTODO · 6 FASES</text>
+
+  <!-- Línea de flujo -->
+  <line x1="192" y1="250" x2="1408" y2="250" stroke="#1e3a5f" stroke-width="7" stroke-linecap="round"/>
+  <line x1="192" y1="250" x2="1408" y2="250" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" stroke-dasharray="18 24" opacity=".75">
+    <animate attributeName="stroke-dashoffset" values="0;-420" dur="4s" repeatCount="indefinite"/>
+  </line>
+  <circle r="9" fill="#eaf7ff" opacity=".95" filter="url(#soft)">
+    <animateMotion dur="7s" repeatCount="indefinite" rotate="auto"><mpath href="#flowLine"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.08;.9;1" dur="7s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- ===== NODOS DEL PIPELINE ===== -->
+  <!-- N1 REFERENCIA -->
+  <g>
+    <circle cx="160" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="160" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <g stroke="#7dd3fc" stroke-width="2" fill="none" stroke-linejoin="round">
+      <rect x="146" y="238" width="28" height="23" rx="3"/>
+      <path d="M149 257l7-8 6 5 5-4 8 7"/>
+      <circle cx="154" cy="245" r="2.4" fill="#00d4ff" stroke="none"/>
+    </g>
+    <text x="160" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">REFERENCIA</text>
+    <text x="160" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">Pinterest · inspiración</text>
+  </g>
+  <!-- N2 MAQUETA -->
+  <g>
+    <circle cx="416" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="416" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <g fill="none" stroke="#7dd3fc" stroke-width="2">
+      <rect x="405" y="235" width="22" height="30" rx="3"/>
+      <rect x="409" y="240" width="14" height="6" fill="#00d4ff" stroke="none" opacity=".85"/>
+      <rect x="409" y="249" width="14" height="4" fill="#334155" stroke="none"/>
+      <rect x="409" y="256" width="9" height="4" fill="#334155" stroke="none"/>
+    </g>
+    <text x="416" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">MAQUETA</text>
+    <text x="416" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">Jenspark · DALL·E 3</text>
+  </g>
+  <!-- N3 ASSETS -->
+  <g>
+    <circle cx="672" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="672" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <g fill="none" stroke="#7dd3fc" stroke-width="2">
+      <rect x="656" y="240" width="32" height="21" rx="3"/>
+      <line x1="666" y1="240" x2="666" y2="261" stroke-dasharray="3 3" stroke="#00d4ff"/>
+      <line x1="678" y1="240" x2="678" y2="261" stroke-dasharray="3 3" stroke="#00d4ff"/>
+    </g>
+    <text x="672" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">ASSETS</text>
+    <text x="672" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">16:9 · sin ghosting</text>
+  </g>
+  <!-- N4 LOOP -->
+  <g>
+    <circle cx="928" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="4.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="928" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="4.2s" repeatCount="indefinite"/>
+    </circle>
+    <g fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round">
+      <path d="M916 250a12 12 0 1 1 12 12"/>
+      <path d="M928 262l-5 6h10z" fill="#00d4ff" stroke="none"/>
+    </g>
+    <text x="928" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">LOOP</text>
+    <text x="928" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">720p · 4s · ~880 KB</text>
+  </g>
+  <!-- N5 CÓDIGO -->
+  <g>
+    <circle cx="1184" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="5.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1184" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="5.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="1184" y="258" text-anchor="middle" font-family="'Consolas',monospace" font-size="21" font-weight="800" fill="#00d4ff">&lt;/&gt;</text>
+    <text x="1184" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">CÓDIGO</text>
+    <text x="1184" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">Antigravity · Gemini</text>
+  </g>
+  <!-- N6 DEPLOY -->
+  <g>
+    <circle cx="1440" cy="250" r="50" fill="url(#glowA)" opacity="0">
+      <animate attributeName="opacity" values="0;.95;0" keyTimes="0;.06;.16" dur="12s" begin="7s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1440" cy="250" r="32" fill="#0f172a" stroke="#1e3a5f" stroke-width="2">
+      <animate attributeName="stroke" values="#1e3a5f;#22c55e;#1e3a5f" keyTimes="0;.06;.16" dur="12s" begin="7s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <path d="M1440 234c6 6 8 13 8 19h-16c0-6 2-13 8-19z" fill="#e2e8f0"/>
+      <path d="M1432 253l-4 8 6-2zM1448 253l4 8-6-2z" fill="#7dd3fc"/>
+      <path d="M1436 261h8l-4 8z" fill="#f59e0b">
+        <animate attributeName="opacity" values="1;.3;1" dur=".5s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <text x="1440" y="311" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="18" font-weight="700" fill="#e2e8f0">DEPLOY</text>
+    <text x="1440" y="333" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">GitHub · Hostinger</text>
+  </g>
+
+  <!-- ===== PANEL A : REFERENCIALIDAD ===== -->
+  <g>
+    <rect x="80" y="370" width="440" height="460" rx="14" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"/>
+    <text x="110" y="404" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#00d4ff" letter-spacing="1.4">01 · GALERÍA ESTRATÉGICA</text>
+    <g>
+      <!-- 9 miniaturas -->
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin=".4s" repeatCount="indefinite"/>
+        <rect x="110" y="424" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <rect x="122" y="436" width="94" height="13" rx="3" fill="#1e3a5f"/>
+        <rect x="122" y="458" width="70" height="7" rx="3" fill="#334155"/>
+        <rect x="122" y="472" width="86" height="7" rx="3" fill="#334155"/>
+        <rect x="122" y="492" width="40" height="14" rx="7" fill="#00d4ff" opacity=".5"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin=".55s" repeatCount="indefinite"/>
+        <rect x="241" y="424" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <circle cx="300" cy="458" r="18" fill="#a855f7" opacity=".45"/>
+        <rect x="253" y="486" width="94" height="7" rx="3" fill="#334155"/>
+        <rect x="253" y="500" width="60" height="7" rx="3" fill="#334155"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin=".7s" repeatCount="indefinite"/>
+        <rect x="372" y="424" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <rect x="384" y="436" width="94" height="40" rx="4" fill="#0b1a2e"/>
+        <rect x="384" y="484" width="44" height="26" rx="4" fill="#1e3a5f"/>
+        <rect x="434" y="484" width="44" height="26" rx="4" fill="#1e3a5f"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin=".85s" repeatCount="indefinite"/>
+        <rect x="110" y="536" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <rect x="122" y="548" width="94" height="50" rx="4" fill="#0b1a2e"/>
+        <circle cx="169" cy="573" r="12" fill="#22c55e" opacity=".4"/>
+        <rect x="122" y="606" width="80" height="7" rx="3" fill="#334155"/>
+      </g>
+      <!-- SELECCIONADA -->
+      <g opacity="0">
+        <animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="1s" repeatCount="indefinite"/>
+        <rect x="238" y="533" width="124" height="106" rx="10" fill="#0b1a2e" stroke="#00d4ff" stroke-width="3">
+          <animate attributeName="stroke-opacity" values="1;.45;1" dur="2.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="253" y="548" width="94" height="44" rx="4" fill="#00d4ff" opacity=".28"/>
+        <rect x="253" y="600" width="70" height="7" rx="3" fill="#7dd3fc" opacity=".8"/>
+        <rect x="253" y="614" width="94" height="7" rx="3" fill="#334155"/>
+        <circle cx="352" cy="544" r="13" fill="#22c55e"/>
+        <path d="M346 544l4 5 8-9" stroke="#04121c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="1.15s" repeatCount="indefinite"/>
+        <rect x="372" y="536" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <rect x="384" y="548" width="94" height="10" rx="3" fill="#1e3a5f"/>
+        <rect x="384" y="566" width="94" height="10" rx="3" fill="#1e3a5f"/>
+        <rect x="384" y="584" width="60" height="10" rx="3" fill="#1e3a5f"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="1.3s" repeatCount="indefinite"/>
+        <rect x="110" y="648" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <path d="M122 730l30-42 24 26 18-16 24 32z" fill="#1e3a5f"/>
+        <circle cx="200" cy="670" r="10" fill="#f59e0b" opacity=".6"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="1.45s" repeatCount="indefinite"/>
+        <rect x="241" y="648" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <rect x="253" y="660" width="94" height="34" rx="4" fill="#0b1a2e"/>
+        <rect x="253" y="702" width="44" height="34" rx="4" fill="#0b1a2e"/>
+        <rect x="303" y="702" width="44" height="34" rx="4" fill="#0b1a2e"/>
+      </g>
+      <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="1.6s" repeatCount="indefinite"/>
+        <rect x="372" y="648" width="118" height="100" rx="8" fill="url(#thumbGrad)" stroke="#1e3a5f"/>
+        <circle cx="431" cy="686" r="24" fill="none" stroke="#00d4ff" stroke-width="3" opacity=".6"/>
+        <rect x="384" y="722" width="94" height="7" rx="3" fill="#334155"/>
+      </g>
+    </g>
+    <text x="110" y="784" font-family="'Segoe UI',system-ui,sans-serif" font-size="15.5" font-weight="700" fill="#bae6fd">Búsqueda: “UI Design” · “Landing Page”</text>
+    <text x="110" y="808" font-family="'Segoe UI',system-ui,sans-serif" font-size="14" fill="#64748b">Extraer patrones de éxito visual — no copiar.</text>
+  </g>
+
+  <!-- ===== PANEL B : MAQUETA + SEGMENTACIÓN ===== -->
+  <g>
+    <rect x="560" y="370" width="480" height="460" rx="14" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"/>
+    <text x="590" y="404" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#00d4ff" letter-spacing="1.4">02 · MAQUETA LARGA → ASSET LIMPIO</text>
+    <text x="677" y="432" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#7dd3fc">ASPECT RATIO 1:2 / 9:16</text>
+    <!-- maqueta larga -->
+    <rect x="592" y="442" width="170" height="360" rx="8" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1.6"/>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="2s" repeatCount="indefinite"/>
+      <rect x="592" y="442" width="170" height="72" fill="#0b1a2e"/>
+      <rect x="606" y="458" width="90" height="8" rx="4" fill="#e2e8f0" opacity=".85"/>
+      <rect x="606" y="474" width="60" height="6" rx="3" fill="#7dd3fc" opacity=".7"/>
+      <rect x="606" y="490" width="42" height="13" rx="6" fill="#00d4ff"/>
+      <circle cx="736" cy="470" r="4" fill="#a855f7"><animate attributeName="cy" values="470;496;470" dur="4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".3;1;.3" dur="4s" repeatCount="indefinite"/></circle>
+      <circle cx="722" cy="486" r="3" fill="#00d4ff"><animate attributeName="cy" values="486;458;486" dur="5s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.25;1" dur="5s" repeatCount="indefinite"/></circle>
+      <circle cx="748" cy="494" r="2.6" fill="#22c55e"><animate attributeName="cy" values="494;462;494" dur="6s" repeatCount="indefinite"/></circle>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="2.3s" repeatCount="indefinite"/>
+      <rect x="592" y="514" width="170" height="72" fill="#dbe4f0"/>
+      <rect x="606" y="530" width="70" height="7" rx="3" fill="#334155"/>
+      <rect x="606" y="546" width="44" height="34" rx="4" fill="#94a3b8"/>
+      <rect x="656" y="546" width="44" height="34" rx="4" fill="#94a3b8"/>
+      <rect x="706" y="546" width="44" height="34" rx="4" fill="#94a3b8"/>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="2.6s" repeatCount="indefinite"/>
+      <rect x="592" y="586" width="170" height="72" fill="#0b1a2e"/>
+      <rect x="606" y="602" width="142" height="44" rx="5" fill="#132339"/>
+      <circle cx="628" cy="624" r="11" fill="#00d4ff" opacity=".55"/>
+      <rect x="648" y="614" width="82" height="7" rx="3" fill="#475569"/>
+      <rect x="648" y="628" width="56" height="6" rx="3" fill="#334155"/>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="2.9s" repeatCount="indefinite"/>
+      <rect x="592" y="658" width="170" height="72" fill="#dbe4f0"/>
+      <rect x="606" y="674" width="80" height="7" rx="3" fill="#334155"/>
+      <rect x="606" y="690" width="142" height="26" rx="4" fill="#94a3b8"/>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.05;1" dur="12s" begin="3.2s" repeatCount="indefinite"/>
+      <rect x="592" y="730" width="170" height="72" fill="#0b1a2e"/>
+      <rect x="606" y="748" width="100" height="8" rx="4" fill="#e2e8f0" opacity=".8"/>
+      <rect x="606" y="766" width="70" height="18" rx="9" fill="#a855f7"/>
+    </g>
+    <!-- cortes de segmentación -->
+    <g stroke="#00d4ff" stroke-width="2" stroke-dasharray="7 6" opacity="0">
+      <animate attributeName="opacity" values="0;.95;.95;0" keyTimes="0;.05;.8;1" dur="12s" begin="3.5s" repeatCount="indefinite"/>
+      <line x1="586" y1="514" x2="768" y2="514"/>
+      <line x1="586" y1="586" x2="768" y2="586"/>
+      <line x1="586" y1="658" x2="768" y2="658"/>
+      <line x1="586" y1="730" x2="768" y2="730"/>
+    </g>
+    <!-- flecha -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="3.7s" repeatCount="indefinite"/>
+      <line x1="778" y1="620" x2="812" y2="620" stroke="#00d4ff" stroke-width="3"/>
+      <path d="M812 612l14 8-14 8z" fill="#00d4ff"/>
+    </g>
+    <!-- assets limpios 16:9 -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="3.9s" repeatCount="indefinite"/>
+      <rect x="836" y="442" width="186" height="105" rx="8" fill="#0b1a2e" stroke="#1e3a5f" stroke-width="1.6"/>
+      <ellipse cx="929" cy="500" rx="72" ry="34" fill="url(#glowA)" opacity=".55"><animate attributeName="opacity" values=".3;.75;.3" dur="5s" repeatCount="indefinite"/></ellipse>
+      <path d="M846 532l40-34 32 24 28-20 56 40z" fill="#132339"/>
+      <text x="848" y="460" font-family="'Segoe UI',system-ui,sans-serif" font-size="11.5" fill="#475569" letter-spacing="1">16:9 · LIMPIO</text>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="4.2s" repeatCount="indefinite"/>
+      <rect x="836" y="562" width="186" height="105" rx="8" fill="#dbe4f0" stroke="#1e3a5f" stroke-width="1.6"/>
+      <circle cx="980" cy="600" r="26" fill="#94a3b8" opacity=".55"/>
+      <path d="M846 652l52-40 40 28 34-22 48 34z" fill="#94a3b8" opacity=".7"/>
+      <text x="848" y="580" font-family="'Segoe UI',system-ui,sans-serif" font-size="11.5" fill="#475569" letter-spacing="1">16:9 · LIMPIO</text>
+    </g>
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="4.5s" repeatCount="indefinite"/>
+      <rect x="836" y="682" width="186" height="105" rx="8" fill="#0b1a2e" stroke="#1e3a5f" stroke-width="1.6"/>
+      <circle cx="900" cy="734" r="30" fill="none" stroke="#a855f7" stroke-width="3" opacity=".6"><animate attributeName="r" values="26;34;26" dur="6s" repeatCount="indefinite"/></circle>
+      <circle cx="960" cy="722" r="4" fill="#00d4ff"><animate attributeName="cy" values="722;752;722" dur="4.5s" repeatCount="indefinite"/></circle>
+      <text x="848" y="700" font-family="'Segoe UI',system-ui,sans-serif" font-size="11.5" fill="#475569" letter-spacing="1">16:9 · LIMPIO</text>
+    </g>
+    <text x="800" y="816" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#64748b">Alternancia oscuro / claro = ancla visual para la IA de código</text>
+  </g>
+
+  <!-- ===== PANEL C : LOOP + CÓDIGO + DEPLOY ===== -->
+  <g>
+    <rect x="1080" y="370" width="440" height="460" rx="14" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"/>
+    <text x="1110" y="404" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#00d4ff" letter-spacing="1.4">03 · LOOP · CÓDIGO · DEPLOY</text>
+
+    <!-- Loop first/last frame -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="4.9s" repeatCount="indefinite"/>
+      <rect x="1122" y="428" width="88" height="56" rx="7" fill="#0b1a2e" stroke="#00d4ff" stroke-width="2"/>
+      <text x="1166" y="463" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#7dd3fc">FRAME 1</text>
+      <rect x="1390" y="428" width="88" height="56" rx="7" fill="#0b1a2e" stroke="#00d4ff" stroke-width="2"/>
+      <text x="1434" y="463" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="17" font-weight="800" fill="#7dd3fc">FRAME 1</text>
+      <path d="M1212 452 C1258 424 1342 424 1388 452" fill="none" stroke="#00d4ff" stroke-width="2.4" stroke-dasharray="8 7">
+        <animate attributeName="stroke-dashoffset" values="0;-60" dur="1.6s" repeatCount="indefinite"/>
+      </path>
+      <path d="M1388 480 C1342 508 1258 508 1212 480" fill="none" stroke="#a855f7" stroke-width="2.4" stroke-dasharray="8 7">
+        <animate attributeName="stroke-dashoffset" values="0;60" dur="1.6s" repeatCount="indefinite"/>
+      </path>
+      <circle r="7" fill="#eaf7ff"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#loopTop"/></animateMotion></circle>
+      <g transform="translate(1300,466)">
+        <circle r="24" fill="none" stroke="#1e3a5f" stroke-width="3" stroke-dasharray="10 8">
+          <animateTransform attributeName="transform" type="rotate" values="0;360" dur="9s" repeatCount="indefinite"/>
+        </circle>
+        <path d="M-7 -11l18 11-18 11z" fill="#22c55e"/>
+      </g>
+      <text x="1300" y="518" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" fill="#94a3b8">FIRST &amp; LAST FRAME · 4 s · SIN AUDIO</text>
+      <rect x="1216" y="528" width="168" height="26" rx="13" fill="rgba(34,197,94,.14)" stroke="#22c55e" stroke-width="1.4"/>
+      <text x="1300" y="546" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="13" font-weight="800" fill="#22c55e">720p · ≈ 880 KB</text>
+    </g>
+
+    <!-- Código -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="5.6s" repeatCount="indefinite"/>
+      <rect x="1110" y="572" width="380" height="140" rx="10" fill="#080d18" stroke="#1e3a5f" stroke-width="1.6"/>
+      <circle cx="1130" cy="590" r="5" fill="#ef4444"/><circle cx="1148" cy="590" r="5" fill="#f59e0b"/><circle cx="1166" cy="590" r="5" fill="#22c55e"/>
+      <text x="1470" y="595" text-anchor="end" font-family="'Consolas',monospace" font-size="12" fill="#475569">index.html</text>
+      <rect x="1128" y="612" height="8" rx="4" fill="#00d4ff" width="0"><animate attributeName="width" values="0;212;212" keyTimes="0;.05;1" dur="12s" begin="5.8s" repeatCount="indefinite"/></rect>
+      <rect x="1128" y="632" height="8" rx="4" fill="#a855f7" width="0"><animate attributeName="width" values="0;158;158" keyTimes="0;.05;1" dur="12s" begin="6.05s" repeatCount="indefinite"/></rect>
+      <rect x="1148" y="652" height="8" rx="4" fill="#22c55e" width="0"><animate attributeName="width" values="0;248;248" keyTimes="0;.05;1" dur="12s" begin="6.3s" repeatCount="indefinite"/></rect>
+      <rect x="1148" y="672" height="8" rx="4" fill="#64748b" width="0"><animate attributeName="width" values="0;126;126" keyTimes="0;.05;1" dur="12s" begin="6.55s" repeatCount="indefinite"/></rect>
+      <rect x="1128" y="692" height="8" rx="4" fill="#7dd3fc" width="0"><animate attributeName="width" values="0;190;190" keyTimes="0;.05;1" dur="12s" begin="6.8s" repeatCount="indefinite"/></rect>
+      <rect x="1330" y="690" width="3" height="12" fill="#eaf7ff"><animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/></rect>
+    </g>
+
+    <!-- Deploy -->
+    <g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.06;1" dur="12s" begin="7.2s" repeatCount="indefinite"/>
+      <line x1="1180" y1="812" x2="1180" y2="736" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="5 6"/>
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0 46;0 -14" dur="12s" begin="7.2s" repeatCount="indefinite"/>
+        <g transform="translate(1180,780)">
+          <path d="M0 -26c11 11 15 24 15 35h-30c0-11 4-24 15-35z" fill="url(#accGrad)"/>
+          <circle cx="0" cy="-6" r="5.5" fill="#0a0e1a"/>
+          <path d="M-15 9l-9 15 12-4zM15 9l9 15-12-4z" fill="#7dd3fc"/>
+          <path d="M-7 12h14l-7 18z" fill="#f59e0b"><animate attributeName="opacity" values="1;.35;1" dur=".45s" repeatCount="indefinite"/></path>
+        </g>
+      </g>
+      <rect x="1258" y="742" width="232" height="62" rx="12" fill="#0b1322" stroke="#1e3a5f" stroke-width="1.6"/>
+      <text x="1274" y="766" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#94a3b8">Source Control → GitHub</text>
+      <text x="1274" y="788" font-family="'Segoe UI',system-ui,sans-serif" font-size="13.5" fill="#94a3b8">GitHub → Hostinger (Node)</text>
+      <rect x="1258" y="742" width="6" height="62" rx="3" fill="#22c55e"/>
+      <g><animate attributeName="opacity" values="1;.35;1" dur="1.8s" repeatCount="indefinite"/>
+        <circle cx="1130" cy="742" r="7" fill="#22c55e"/>
+        <text x="1146" y="748" font-family="'Segoe UI',system-ui,sans-serif" font-size="15" font-weight="800" fill="#22c55e" letter-spacing="1.4">EN VIVO</text>
+      </g>
+    </g>
+  </g>
+
+  <text x="80" y="858" font-family="'Segoe UI',system-ui,sans-serif" font-size="14" fill="#475569">Pinterest · Jenspark · Antigravity ID (Gemini Flash) · GitHub · Hostinger</text>
+  <text x="1520" y="858" text-anchor="end" font-family="'Segoe UI',system-ui,sans-serif" font-size="14" fill="#475569">Metodología “Crea con IA” · Rodrigo Olivares</text>
+</symbol>
+</svg>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav id="navbar" aria-label="Navegación del tutorial">
+  <div class="nav-inner" id="navInner">
+    <button class="nav-btn active" data-target="home">🏠 Inicio</button>
+    <button class="nav-btn" data-target="sinopsis">🎬 Sinopsis</button>
+    <button class="nav-btn" data-target="fase1">🔍 Fase 1 · Referencia</button>
+    <button class="nav-btn" data-target="fase2">🖼️ Fase 2 · Maqueta</button>
+    <button class="nav-btn" data-target="fase3">✂️ Fase 3 · Assets</button>
+    <button class="nav-btn" data-target="fase4">🎞️ Fase 4 · Animación</button>
+    <button class="nav-btn" data-target="fase5">💻 Fase 5 · Código</button>
+    <button class="nav-btn" data-target="fase6">🚀 Fase 6 · Despliegue</button>
+    <button class="nav-btn" data-target="prompts">📚 Prompts Maestros</button>
+    <button class="nav-btn" data-target="recursos">🧰 Recursos</button>
+    <button class="nav-btn" data-target="protips">💡 Pro-Tips y Glosario</button>
+    <button class="nav-btn" data-target="fuentes">🔗 Fuentes</button>
+    <button class="nav-btn credit" data-target="creditos">⭐ Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== HOME ==================== -->
+<section class="page active" id="home">
+  <div class="cover-wrap">
+    <svg class="cover" viewBox="0 0 1600 900" role="img" aria-label="Portada animada: flujo de trabajo de creación de webs animadas con inteligencia artificial, desde la referencia visual en Pinterest hasta el despliegue en GitHub y Hostinger.">
+      <use href="#cover-art"/>
+    </svg>
+  </div>
+
+  <span class="hero-badge"><span class="dot"></span> Tutorial Técnico Interactivo · Nivel Intuitivo</span>
+  <h1 class="title">Tutorial Maestro: Creación de Webs Animadas de Alto Impacto con Inteligencia Artificial</h1>
+  <p class="subtitle">De la chispa visual a la aplicación web publicada: dirección creativa, referencialidad estratégica, generación de assets, animación cinemática en loop, código asistido por IA y despliegue profesional.</p>
+  <p class="description">Este tutorial recorre íntegramente el método de 6 fases para transformar una imagen de inspiración en una landing page animada, moderna y premium. Aprenderás a trabajar como <strong>director creativo</strong> —no como ejecutor manual— apoyándote en herramientas de IA como Jenspark, Antigravity ID (Gemini Flash), GitHub y Hostinger, e incorporarás la <strong>Librería de Prompts Maestros</strong> completa, los pro-tips de rendimiento y el glosario técnico en castellano simple.</p>
+
+  <div class="quote">
+    <p>“Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.”</p>
+    <span>Principio didáctico de este tutorial</span>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="num">6</div><div class="lbl">Fases del método</div></div>
+    <div class="metric"><div class="num">5</div><div class="lbl">Prompts maestros</div></div>
+    <div class="metric"><div class="num">3</div><div class="lbl">Niveles de referencialidad</div></div>
+    <div class="metric"><div class="num">720p</div><div class="lbl">Resolución de vídeo</div></div>
+    <div class="metric"><div class="num">≈880 KB</div><div class="lbl">Peso óptimo del loop</div></div>
+    <div class="metric"><div class="num">4 s</div><div class="lbl">Duración sin audio</div></div>
+    <div class="metric"><div class="num">1:2 / 9:16</div><div class="lbl">Aspect ratio maqueta</div></div>
+    <div class="metric"><div class="num">5</div><div class="lbl">Herramientas del ecosistema</div></div>
+  </div>
+
+  <div class="stamp">
+    <span class="chip">📅 Fecha: <b>07/09/2026</b></span>
+    <span class="chip">🕒 Hora: <b>08:20:08</b></span>
+    <span class="chip">👨‍💻 Créditos: <b>Rubén Sbarsky</b></span>
+    <span class="chip">📖 Fuente: <b>Rodrigo Olivares · “Crea con IA”</b></span>
+  </div>
+
+  <div class="callout co-info" style="margin-top:22px">
+    <span class="ci">🧭</span>
+    <div><div class="ct">Cómo usar este tutorial</div>
+    <p>Navega con la barra superior (desplazable en móvil). Cada fase incluye su fundamento, sus ajustes técnicos, la <em>Regla de los 3 Niveles</em> cuando el documento la aporta, demos interactivos y el prompt maestro asociado. La pestaña <strong>CRÉDITOS</strong> reproduce exactamente la misma portada animada que estás viendo.</p></div>
+  </div>
+</section>
+
+<!-- ==================== SINOPSIS ==================== -->
+<section class="page" id="sinopsis">
+  <div class="sec-head">
+    <div class="sec-icon">🎬</div>
+    <div><div class="sec-kicker">Capítulo 1</div><h2>Sinopsis y Estrategia de Diseño</h2></div>
+  </div>
+  <p class="sec-lead">El punto de partida conceptual del método: por qué la industria ha cambiado de paradigma y qué rol debes adoptar tú como creador.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">La metamorfosis de la industria web</h3>
+    <p>La industria del desarrollo web está experimentando una <strong>metamorfosis radical</strong>: hemos pasado de la era de la <em>“ejecución manual”</em> a la era de la <em>“dirección creativa”</em>. El uso de la Inteligencia Artificial, combinado con una sólida referencialidad visual, permite reducir drásticamente el trabajo pesado —como el recorte de activos o el maquetado de código base— para priorizar la visión estética y funcional.</p>
+    <p>El objetivo de este tutorial es <strong>transformar una chispa visual en una aplicación web animada y profesional</strong>.</p>
+  </div>
+
+  <h3>El Nivel Intuitivo: eres el director de cine</h3>
+  <p>Como docente, te invito a adoptar el <strong>Nivel Intuitivo</strong> de este método: imagina que eres un director de cine. No necesitas realizar las acrobacias técnicas tú mismo; para eso tienes a tus <em>“dobles de acción”</em> (herramientas de IA como Jenspark o Gemini), quienes ejecutarán las tareas complejas bajo tu supervisión. Tú mantienes el control total de la narrativa, asegurando que cada componente sirva al propósito de la obra final. Todo gran proyecto comienza con una fuente de inspiración externa, y ahí es donde empezamos.</p>
+
+  <div class="grid g3">
+    <div class="mini"><span class="ic">🎥</span><h4>Director de cine</h4><p>Tú defines la narrativa y supervisas. No ejecutas las acrobacias técnicas.</p></div>
+    <div class="mini"><span class="ic">🤸</span><h4>Dobles de acción</h4><p>Las herramientas de IA (Jenspark, Gemini) ejecutan las tareas complejas bajo tu supervisión.</p></div>
+    <div class="mini"><span class="ic">🧩</span><h4>Control de la narrativa</h4><p>Cada componente debe servir al propósito de la obra final.</p></div>
+  </div>
+
+  <div class="callout co-err">
+    <span class="ci">⛔</span>
+    <div><div class="ct">Error de enfoque</div>
+    <p>Pensar que debes realizar tú mismo el trabajo pesado (recorte de activos, maquetado de código base). Eso pertenece a la era de la <em>ejecución manual</em>, no a la de la dirección creativa.</p></div>
+  </div>
+
+  <h3>Mapa interactivo del método · 6 fases</h3>
+  <p>Recorre el flujo completo paso a paso. Utiliza los controles situados <strong>justo debajo del diagrama</strong> para avanzar, retroceder, reiniciar o saltar a cualquier fase.</p>
+
+  <div class="flow-frame">
+    <div class="flow-track" id="flowTrack" role="list" aria-label="Diagrama de las 6 fases del método"></div>
+    <!-- Controles inmediatamente debajo del diagrama -->
+    <div class="stepper-controls">
+      <button class="btn ghost" id="fsPrev" type="button">◀ Anterior</button>
+      <button class="btn" id="fsNext" type="button">Siguiente ▶</button>
+      <button class="btn ghost" id="fsReset" type="button">⟲ Reset</button>
+      <div class="slider-wrap">
+        <input type="range" id="fsSlider" min="0" max="5" step="1" value="0" aria-label="Seleccionar fase del método">
+      </div>
+      <span class="step-ind" id="fsInd">Fase <b>1</b> de 6</span>
+    </div>
+  </div>
+
+  <div class="stepper-panel" id="fsPanel" aria-live="polite"></div>
+
+  <div class="callout co-info">
+    <span class="ci">🔗</span>
+    <div><div class="ct">Conexión</div>
+    <p>Cada fase entrega un activo que alimenta a la siguiente: la referencia guía a la maqueta, la maqueta se segmenta en assets limpios, los assets se animan en loop, los loops se ensamblan en código y el código se despliega como aplicación.</p></div>
+  </div>
+</section>
+
+<!-- ==================== FASE 1 ==================== -->
+<section class="page" id="fase1">
+  <div class="sec-head">
+    <div class="sec-icon">🔍</div>
+    <div><div class="sec-kicker">Capítulo 2 · Fase 1</div><h2>La Búsqueda de Referencialidad (Inspiración)</h2></div>
+  </div>
+  <p class="sec-lead">Empezar desde un lienzo en blanco es una <strong>ineficiencia técnica</strong>. La clave para una estética premium es utilizar la referencialidad estratégica para optimizar tiempos y garantizar un estándar de calidad desde el segundo cero.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h4>📌 Pinterest como Galería Estratégica</h4>
+      <p>Utiliza términos como <strong>“UI Design”</strong> o <strong>“Landing Page”</strong> para encontrar maquetas conceptuales. Selecciona una imagen con <strong>resolución decente</strong> para que sirva como base sólida.</p>
+    </div>
+    <div class="card">
+      <h4>🎯 Selección Estratégica</h4>
+      <p>No busques copiar, sino <strong>extraer patrones de éxito visual</strong> que resuenen con tu marca.</p>
+    </div>
+  </div>
+
+  <h3>Referencialidad Visual · Regla de los 3 Niveles</h3>
+  <div class="level">
+    <span class="tag">Nivel 1 · Técnico</span>
+    <h4>El uso de imágenes preexistentes guía el espacio latente</h4>
+    <p>El uso de imágenes preexistentes sirve para guiar el <strong>espacio latente del modelo de difusión</strong>. Esto influye en los <strong>pesos, balances y paletas de colores</strong>, permitiendo que la IA comprenda la “intención de diseño” sin ambigüedades.</p>
+  </div>
+  <div class="level l2">
+    <span class="tag">Nivel 2 · Ejemplo</span>
+    <h4>Asimilación del “estilo premium”</h4>
+    <p>Al proporcionar el diseño de una agencia conceptual, la IA asimila el “estilo premium”, replicando la <strong>jerarquía de espacios negativos</strong> y el <strong>contraste tipográfico</strong> deseado.</p>
+  </div>
+  <div class="level l3">
+    <span class="tag">Nivel 3 · Conexión</span>
+    <h4>Traducir la referencia</h4>
+    <p>Una vez elegida la referencia, el siguiente paso es “traducirla” mediante el potencial de los <strong>modelos generativos</strong> para crear nuestra propia versión original.</p>
+  </div>
+
+  <div class="callout co-ok">
+    <span class="ci">✅</span>
+    <div><div class="ct">Criterio de selección</div>
+    <p>Resolución decente + patrón visual claro + resonancia con tu marca. La referencia es una base sólida, no un original a calcar.</p></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Fase 1 · Datos operativos</caption>
+      <thead><tr><th>Elemento</th><th>Indicación del método</th></tr></thead>
+      <tbody>
+        <tr><td><b>Herramienta</b></td><td>Pinterest (galería estratégica de referencialidad visual).</td></tr>
+        <tr><td><b>Términos de búsqueda</b></td><td>“UI Design”, “Landing Page”.</td></tr>
+        <tr><td><b>Calidad exigida</b></td><td>Imagen con resolución decente, base sólida.</td></tr>
+        <tr><td><b>Enfoque</b></td><td>Extraer patrones de éxito visual; no copiar.</td></tr>
+        <tr><td><b>Efecto técnico</b></td><td>Guía el espacio latente del modelo de difusión: pesos, balances y paletas de colores.</td></tr>
+        <tr><td><b>Siguiente paso</b></td><td>“Traducir” la referencia con modelos generativos (Fase 2).</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== FASE 2 ==================== -->
+<section class="page" id="fase2">
+  <div class="sec-head">
+    <div class="sec-icon">🖼️</div>
+    <div><div class="sec-kicker">Capítulo 3 · Fase 2</div><h2>Generación de la Maqueta Maestra</h2></div>
+  </div>
+  <p class="sec-lead">La fidelidad de nuestra web depende de la <strong>iteración</strong>. Es fundamental entender que el primer resultado de la IA puede no ser perfecto; la iteración rigurosa es parte intrínseca del flujo de trabajo profesional.</p>
+
+  <div class="grid g2">
+    <div class="card"><h4>⚙️ Modelos y Ejecución</h4><p>Utiliza herramientas como <strong>Jenspark</strong> (que integra <strong>DALL·E 3</strong>) para subir tu imagen de referencia y aplicar el <strong>PROMPT 1</strong>.</p></div>
+    <div class="card"><h4>📐 Ajustes Técnicos (Aspect Ratio)</h4><p>Configura el formato en <strong>1:2</strong> o <strong>9:16</strong>. Esto fuerza a la IA a generar una página “larga” que contenga el flujo completo de la landing page.</p></div>
+    <div class="card"><h4>🌓 El Principio de Alternancia</h4><p>Es <strong>CRÍTICO</strong> instruir a la IA para que intercale secciones oscuras con claras. Este contraste visual no solo es estético, sino que facilita enormemente a la IA de código (Gemini) identificar dónde termina una sección y empieza la siguiente.</p></div>
+    <div class="card"><h4>🔁 Técnica de Remix</h4><p>Si el primer diseño no es fiel, aplica un <strong>segundo prompt más riguroso</strong> exigiendo fidelidad absoluta. La dirección creativa implica no conformarse con la primera interpretación de la IA.</p></div>
+  </div>
+
+  <div class="callout co-warn">
+    <span class="ci">⚠️</span>
+    <div><div class="ct">Advertencia</div>
+    <p>El primer resultado de la IA puede no ser perfecto. La iteración rigurosa —incluido el comando <strong>Remix</strong>— forma parte del flujo profesional, no es un fallo del proceso.</p></div>
+  </div>
+
+  <h3>Demo 1 · Aspect Ratio de la maqueta</h3>
+  <div class="demo">
+    <div class="demo-bar" role group aria-label="Selector de aspect ratio">
+      <button class="tbtn" data-ratio="r11" type="button">1:1</button>
+      <button class="tbtn on" data-ratio="r12" type="button">1:2 (indicado)</button>
+      <button class="tbtn" data-ratio="r916" type="button">9:16 (indicado)</button>
+    </div>
+    <div class="demo-stage">
+      <div class="mock r12" id="ratioMock" aria-hidden="true">
+        <div class="msec dark"><span class="mbar"></span></div>
+        <div class="msec light"><span class="mbar"></span></div>
+        <div class="msec dark"><span class="mbar"></span></div>
+        <div class="msec light"><span class="mbar"></span></div>
+        <div class="msec dark"><span class="mbar"></span></div>
+      </div>
+    </div>
+    <p class="demo-note" id="ratioNote">Formato <b>1:2</b>: fuerza a la IA a generar una página “larga” que contenga el flujo completo de la landing page (hero; beneficios/servicios/características; sección visual intermedia; prueba social/casos de uso/estadísticas; llamada final a la acción).</p>
+  </div>
+
+  <h3>Demo 2 · Principio de Alternancia</h3>
+  <div class="demo">
+    <div class="demo-bar">
+      <button class="tbtn" id="altOff" type="button">Secciones sin alternar</button>
+      <button class="tbtn on" id="altOn" type="button">Alternancia oscuro / claro (CRÍTICO)</button>
+    </div>
+    <div class="demo-stage">
+      <div class="mock r12" id="altMock" aria-hidden="true">
+        <div class="msec dark"><span class="mbar"></span></div>
+        <div class="msec light"><span class="mbar"></span></div>
+        <div class="msec dark"><span class="mbar"></span></div>
+        <div class="msec light"><span class="mbar"></span></div>
+        <div class="msec dark"><span class="mbar"></span></div>
+      </div>
+    </div>
+    <p class="demo-note" id="altNote"><b>Con alternancia:</b> el contraste visual no solo es estético; facilita enormemente a la IA de código (Gemini) identificar dónde termina una sección y empieza la siguiente.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Fase 2 · Parámetros de generación</caption>
+      <thead><tr><th>Parámetro</th><th>Valor / instrucción</th><th>Finalidad</th></tr></thead>
+      <tbody>
+        <tr><td><b>Herramienta</b></td><td>Jenspark (integra DALL·E 3)</td><td>Generar la maqueta a partir de la referencia subida.</td></tr>
+        <tr><td><b>Prompt</b></td><td>PROMPT 1</td><td>Maqueta completa de landing page adaptada al nuevo proyecto.</td></tr>
+        <tr><td><b>Aspect ratio</b></td><td>1:2 o 9:16</td><td>Página “larga” con el flujo completo de la landing.</td></tr>
+        <tr><td><b>Alternancia</b></td><td>Intercalar secciones oscuras con claras</td><td>Estética + ancla visual para la IA de código.</td></tr>
+        <tr><td><b>Iteración</b></td><td>Remix con prompt más riguroso</td><td>Exigir fidelidad absoluta a la referencia.</td></tr>
+        <tr><td><b>Idioma del texto</b></td><td>Español natural y profesional</td><td>Coherencia con el proyecto.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== FASE 3 ==================== -->
+<section class="page" id="fase3">
+  <div class="sec-head">
+    <div class="sec-icon">✂️</div>
+    <div><div class="sec-kicker">Capítulo 4 · Fase 3</div><h2>Segmentación y Limpieza de Assets</h2></div>
+  </div>
+  <p class="sec-lead">Para que una web sea profesional y no una simple imagen estática, debemos <strong>“despiezar” el diseño</strong>. Separar el fondo visual del contenido funcional (HTML) es lo que permite que el texto sea <strong>editable, accesible y responsive</strong>.</p>
+
+  <div class="grid g2">
+    <div class="card"><h4>🧩 Segmentación (PROMPT 2)</h4><p>Divide la maqueta larga en <strong>imágenes individuales de 16:9</strong>.</p></div>
+    <div class="card"><h4>🧽 Limpieza de Ghosting</h4><p>Debes exigir la <strong>eliminación de textos, botones y logos</strong>. Esto evita que queden elementos visuales “quemados” o artefactos tipográficos en el fondo que arruinarían la profesionalidad del sitio cuando pongamos el texto real encima.</p></div>
+  </div>
+
+  <div class="callout co-err">
+    <span class="ci">🚫</span>
+    <div><div class="ct">Ghosting</div>
+    <p>Textos, botones, menús, logos e interfaces que quedan “quemados” en el fondo generan artefactos tipográficos que arruinan la profesionalidad del sitio al superponer el texto real.</p></div>
+  </div>
+
+  <h3>El Concepto de “Asset Limpio” · Regla de los 3 Niveles</h3>
+  <div class="level">
+    <span class="tag">Nivel 1 · Técnico</span>
+    <h4>Fondo puro listo para CSS</h4>
+    <p>Un asset limpio es una <strong>imagen de fondo pura</strong>, libre de artefactos tipográficos, lista para ser inyectada como <strong>contenedor CSS</strong> sin interferir con la legibilidad del texto dinámico.</p>
+  </div>
+  <div class="level l2">
+    <span class="tag">Nivel 2 · Analogía</span>
+    <h4>El escenario de teatro vacío</h4>
+    <p>Es como tener un <strong>escenario de teatro vacío pero perfectamente iluminado</strong> antes de que entren los actores y el mobiliario.</p>
+  </div>
+  <div class="level l3">
+    <span class="tag">Nivel 3 · Conexión</span>
+    <h4>Del fondo limpio a la animación</h4>
+    <p>Con las imágenes de fondo limpias, pasamos a darles vida mediante la <strong>animación cinemática</strong> (Fase 4).</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Antes / Después de la limpieza</caption>
+      <thead><tr><th>Asset con ghosting (incorrecto)</th><th>Asset limpio (correcto)</th></tr></thead>
+      <tbody>
+        <tr><td>Textos “quemados” en el fondo.</td><td>Solo el fondo visual y los elementos gráficos principales.</td></tr>
+        <tr><td>Botones, menús e interfaces incrustados.</td><td>Botones, menús, tarjetas e interfaz hechos en HTML/CSS.</td></tr>
+        <tr><td>Logos y artefactos tipográficos residuales.</td><td>Sin logos ni artefactos tipográficos.</td></tr>
+        <tr><td>El texto real se superpone y resta profesionalidad.</td><td>Texto editable, accesible y responsive sobre el contenedor CSS.</td></tr>
+        <tr><td>Proporción inconsistente entre secciones.</td><td>Cada sección en aspect ratio 16:9, mismo estilo visual, funcionamiento independiente.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co-info">
+    <span class="ci">ℹ️</span>
+    <div><div class="ct">Independencia de secciones</div>
+    <p>Cada sección debe mantener el mismo estilo visual, pero funcionar de forma independiente: son fondos o bases visuales sobre los que después se agregan textos, botones y elementos de interfaz con HTML/CSS.</p></div>
+  </div>
+</section>
+
+<!-- ==================== FASE 4 ==================== -->
+<section class="page" id="fase4">
+  <div class="sec-head">
+    <div class="sec-icon">🎞️</div>
+    <div><div class="sec-kicker">Capítulo 5 · Fase 4</div><h2>Animación Cinemática y Looping</h2></div>
+  </div>
+  <p class="sec-lead">El movimiento sutil es el diferenciador que separa una web común de una de <strong>“clase mundial”</strong>. Psicológicamente, estas micro-animaciones aumentan la <strong>retención</strong> y la <strong>percepción de calidad premium</strong>.</p>
+
+  <div class="grid g2">
+    <div class="card"><h4>🎚️ Configuración Técnica</h4><p>Utiliza modelos de <strong>Video IA en resolución 720p</strong>.</p></div>
+    <div class="card"><h4>⚖️ Eficiencia de Peso</h4><p>Un video optimizado en esta resolución puede pesar tan solo <strong>880 KB</strong>. Esto es vital para el rendimiento web: obtienes un impacto visual máximo con una carga mínima.</p></div>
+    <div class="card"><h4>🔂 Técnica del Loop Continuo</h4><p>Utiliza el modo de <strong>“Primer y Último Frame”</strong> (First and Last Frame) subiendo la <strong>misma imagen para ambos puntos</strong>. Esto garantiza que el video comience y termine igual, eliminando saltos bruscos.</p></div>
+    <div class="card"><h4>🎬 Ejecución (PROMPT 3)</h4><p>Anima elementos específicos (<strong>partículas, rotación de planetas, flotación sutil</strong>) durante <strong>4 segundos</strong> y <strong>siempre sin audio</strong>.</p></div>
+  </div>
+
+  <h3>Esquema del loop continuo</h3>
+  <div class="demo">
+    <div class="loopfig">
+      <div class="frame">FRAME 1<br><small style="font-weight:600;color:var(--muted)">misma imagen</small></div>
+      <span class="looparrow">➜</span>
+      <div class="frame" style="border-color:var(--purple);color:#d8b4fe;box-shadow:0 0 16px rgba(168,85,247,.25)">4 s<br><small style="font-weight:600;color:var(--muted)">movimiento sutil</small></div>
+      <span class="looparrow">➜</span>
+      <div class="frame">FRAME 1<br><small style="font-weight:600;color:var(--muted)">misma imagen</small></div>
+    </div>
+    <p class="demo-note">Al coincidir el primer y el último frame, el vídeo <b>comienza y termina igual</b>: se eliminan los saltos bruscos y el fondo puede reproducirse en <b>looping</b> infinito.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Fase 4 · Ficha técnica del vídeo</caption>
+      <thead><tr><th>Parámetro</th><th>Valor</th><th>Por qué importa</th></tr></thead>
+      <tbody>
+        <tr><td><b>Resolución</b></td><td>720p</td><td>Configuración técnica de los modelos de Video IA.</td></tr>
+        <tr><td><b>Peso objetivo</b></td><td>≈ 880 KB</td><td>Impacto visual máximo con carga mínima; velocidad de carga.</td></tr>
+        <tr><td><b>Duración</b></td><td>4 segundos</td><td>Vídeo corto de fondo para una sección web.</td></tr>
+        <tr><td><b>Audio</b></td><td>Siempre sin audio</td><td>Requisito explícito de ejecución.</td></tr>
+        <tr><td><b>Modo de loop</b></td><td>First and Last Frame (misma imagen)</td><td>Elimina saltos bruscos; loop continuo.</td></tr>
+        <tr><td><b>Elementos a animar</b></td><td>Partículas, rotación de planetas, flotación sutil</td><td>Movimiento con sentido según la escena.</td></tr>
+        <tr><td><b>Elementos a NO mover</b></td><td>Textos, logos, botones e interfaces</td><td>No deformar la interfaz si aparece en la imagen.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co-ok">
+    <span class="ci">🧠</span>
+    <div><div class="ct">Fundamento psicológico</div>
+    <p>Las micro-animaciones aumentan la retención y la percepción de calidad premium: el movimiento sutil es el diferenciador de una web de clase mundial.</p></div>
+  </div>
+</section>
+
+<!-- ==================== FASE 5 ==================== -->
+<section class="page" id="fase5">
+  <div class="sec-head">
+    <div class="sec-icon">💻</div>
+    <div><div class="sec-kicker">Capítulo 6 · Fase 5</div><h2>Desarrollo y Ensamblaje con Antigravity ID</h2></div>
+  </div>
+  <p class="sec-lead">Aquí es donde la visión se convierte en código. Utilizaremos editores de IA avanzados como <strong>Antigravity ID</strong>, potenciados por <strong>Gemini Flash</strong>.</p>
+
+  <div class="grid g2">
+    <div class="card"><h4>🧠 ¿Por qué Gemini Flash?</h4><p>Elegimos este modelo por sus capacidades de <strong>visión multimodal</strong> y su <strong>extensa ventana de contexto</strong>. Esto le permite “ver” la maqueta maestra original y entender la relación entre los assets para replicarlos con precisión.</p></div>
+    <div class="card"><h4>🗂️ Requisito Técnico</h4><p>Antes de codificar, organiza tu carpeta local <strong>numerando los archivos</strong>: Sección 1, Sección 2, Video 1, etc. Esto reduce la fricción en la interpretación de la IA.</p></div>
+    <div class="card"><h4>🏗️ Ensamblaje (PROMPT 4)</h4><p>La IA debe <strong>leer la maqueta</strong> para copiar fielmente el <strong>copy</strong>, la <strong>jerarquía tipográfica</strong> y los <strong>espaciados</strong>.</p></div>
+    <div class="card"><h4>🎨 Fondo vs. interfaz</h4><p>Cada imagen o vídeo se usa como fondo o base visual de su sección; los textos, botones, menús, tarjetas e interfaz se hacen en <strong>HTML/CSS</strong>, no como parte fija de la imagen.</p></div>
+  </div>
+
+  <h3>AI-Driven Coding · Regla de los 3 Niveles</h3>
+  <div class="level">
+    <span class="tag">Nivel 1 · Técnico</span>
+    <h4>Visión computacional + NLP</h4>
+    <p>Generación de componentes basados en <strong>visión computacional</strong> y <strong>procesamiento de lenguaje natural (NLP)</strong> para mapear assets visuales a estructuras <strong>HTML5/CSS3</strong>.</p>
+  </div>
+  <div class="level l2">
+    <span class="tag">Nivel 2 · Ejemplo</span>
+    <h4>El astronauta animado como background-video</h4>
+    <p>Pedirle a Gemini que use el <strong>video del astronauta animado</strong> como <em>background-video</em> de la sección <strong>Hero</strong>, asegurando que el texto del encabezado tenga el <strong>contraste correcto</strong>.</p>
+  </div>
+  <div class="level l3">
+    <span class="tag">Nivel 3 · Conexión</span>
+    <h4>De local al mundo real</h4>
+    <p>Una vez que la web funciona localmente, es momento de llevarla al mundo real mediante el <strong>despliegue</strong> (Fase 6).</p>
+  </div>
+
+  <h3>Organización recomendada de la carpeta del proyecto</h3>
+  <div class="card soft">
+    <p style="font-family:'Consolas',monospace;font-size:.9rem;color:#bae6fd;white-space:pre-wrap;margin:0">proyecto/
+├─ maqueta-maestra (referencia principal: estructura, estilo, colores,
+│   composición, textos, jerarquía y espaciado)
+├─ Seccion-1  → fondo / base visual de la sección 1
+├─ Seccion-2  → fondo / base visual de la sección 2
+├─ Seccion-3  → fondo / base visual de la sección 3
+├─ Video-1    → background-video en loop (720p · 4 s · sin audio)
+└─ index.html → textos, botones, menús y tarjetas en HTML/CSS</p>
+  </div>
+  <div class="callout co-info">
+    <span class="ci">🔢</span>
+    <div><div class="ct">Por qué numerar</div>
+    <p>Numerar los archivos (Sección 1, Sección 2, Video 1…) reduce la fricción en la interpretación de la IA y permite asociar cada asset a su sección correspondiente.</p></div>
+  </div>
+
+  <h3>Checklist del Director · control de calidad</h3>
+  <p>Marca cada punto a medida que avances por las 6 fases. Todos los ítems provienen de las especificaciones del método.</p>
+  <div class="card">
+    <div class="check-list" id="checkList"></div>
+    <div class="counter">Completados: <b id="chkCount">0</b> de <span id="chkTotal">0</span><div class="meter"><i id="chkMeter"></i></div></div>
+  </div>
+</section>
+
+<!-- ==================== FASE 6 ==================== -->
+<section class="page" id="fase6">
+  <div class="sec-head">
+    <div class="sec-icon">🚀</div>
+    <div><div class="sec-kicker">Capítulo 7 · Fase 6</div><h2>Conversión a App y Despliegue Profesional</h2></div>
+  </div>
+  <p class="sec-lead">El paso final es la <strong>escalabilidad</strong>. Pasar de HTML estático a <strong>Next.js</strong> permite un manejo de componentes más profesional y un rendimiento optimizado.</p>
+
+  <div class="card">
+    <h4>⚛️ Evolución a Next.js (PROMPT 5)</h4>
+    <p>Solicita la conversión de tu código a una estructura de <strong>React/Next.js</strong>. La app debe ser responsive, limpia y fácil de seguir editando, con archivos y componentes bien organizados y sin complejidad innecesaria.</p>
+  </div>
+
+  <h3>Flujo de Despliegue</h3>
+  <div class="steps">
+    <div class="step">
+      <h4>Publicar el código en GitHub</h4>
+      <p>Usa el botón de <strong>“Source Control”</strong> en Antigravity ID para publicar tu código directamente en un <strong>repositorio de GitHub</strong>.</p>
+    </div>
+    <div class="step">
+      <h4>Conectar GitHub con Hostinger</h4>
+      <p>Conecta GitHub con <strong>Hostinger</strong> usando la opción de <strong>App Web de Node</strong>.</p>
+    </div>
+  </div>
+
+  <div class="callout co-ok">
+    <span class="ci">🎛️</span>
+    <div><div class="ct">Control Directorial</div>
+    <p>Al integrar GitHub, cada <strong>“push”</strong> que hagas es una decisión de dirección que se refleja en vivo. Has pasado de ser un diseñador a un <strong>Product Owner</strong>, donde el <strong>99 % del trabajo creativo ya está en producción</strong>.</p></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">De HTML estático a aplicación publicada</caption>
+      <thead><tr><th>Etapa</th><th>Herramienta</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td><b>Conversión</b></td><td>PROMPT 5 · Next.js / React</td><td>Estructura de componentes profesional y rendimiento optimizado.</td></tr>
+        <tr><td><b>Versionado</b></td><td>Antigravity ID → Source Control → GitHub</td><td>Repositorio con el código publicado; cada push es una decisión de dirección.</td></tr>
+        <tr><td><b>Hosting</b></td><td>GitHub → Hostinger (App Web de Node)</td><td>Aplicación desplegada y visible para todo el mundo.</td></tr>
+        <tr><td><b>Rol final</b></td><td>Product Owner</td><td>99 % del trabajo creativo en producción.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== PROMPTS ==================== -->
+<section class="page" id="prompts">
+  <div class="sec-head">
+    <div class="sec-icon">📚</div>
+    <div><div class="sec-kicker">Capítulo 8</div><h2>Librería de Prompts Maestros</h2></div>
+  </div>
+  <p class="sec-lead">Los cinco prompts del método, transcritos íntegramente. Sustituye los bloques <code style="color:var(--accent)">$$…$$</code> por los datos de tu proyecto. Cada prompt incluye botón de copia.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Mapa prompt → fase → herramienta</caption>
+      <thead><tr><th>Prompt</th><th>Fase</th><th>Herramienta</th><th>Objetivo</th></tr></thead>
+      <tbody>
+        <tr><td><b>PROMPT 1</b></td><td>Fase 2</td><td>Jenspark (DALL·E 3)</td><td>Crear la maqueta completa desde una referencia.</td></tr>
+        <tr><td><b>PROMPT 2</b></td><td>Fase 3</td><td>Jenspark</td><td>Separar secciones y quitar textos (assets limpios 16:9).</td></tr>
+        <tr><td><b>PROMPT 3</b></td><td>Fase 4</td><td>Video IA (imagen-a-vídeo)</td><td>Animar una sección de forma sutil y en loop.</td></tr>
+        <tr><td><b>PROMPT 4</b></td><td>Fase 5</td><td>Antigravity ID (Gemini Flash)</td><td>Crear la web usando la maqueta y los assets.</td></tr>
+        <tr><td><b>PROMPT 5</b></td><td>Fase 6</td><td>Antigravity ID (Gemini Flash)</td><td>Convertirlo en una app lista para publicar.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <details open>
+    <summary><span class="pn">PROMPT 1</span> Crear la maqueta completa desde una referencia <span class="arw">▶</span></summary>
+    <div class="dbody">
+      <div class="prompt-box">
+        <pre class="prompt-text">Quiero que generes una maqueta completa de una landing page tomando como referencia la imagen adjunta. El proyecto es sobre: $$DESCRIBE EL PRODUCTO, SERVICIO O MARCA$$. Quiero que mantengas la esencia visual de la referencia: composición, atmósfera, nivel de diseño, estilo general y calidad visual, pero adaptándolo completamente a este nuevo proyecto. La página debe sentirse moderna, profesional, premium y visualmente atractiva. Incluye una estructura real de landing page con varias secciones claras: hero; beneficios, servicios o características; sección visual intermedia; prueba social, casos de uso o estadísticas; llamada final a la acción. El texto visible debe estar en español y debe sonar natural, profesional y coherente con el proyecto. Importante: diseña la página con secciones bien diferenciadas, para que después sea fácil separar cada sección y convertirla en una web real.</pre>
+      </div>
+      <button class="copy-btn" type="button">📋 Copiar PROMPT 1</button>
+      <div class="callout co-info" style="margin-bottom:0"><span class="ci">📐</span><div><div class="ct">Ajustes que acompañan al prompt</div><p>Aspect ratio <strong>1:2 o 9:16</strong> · alternancia de secciones oscuras y claras · si el resultado no es fiel, aplicar <strong>Remix</strong> con un segundo prompt más riguroso exigiendo fidelidad absoluta.</p></div></div>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="pn">PROMPT 2</span> Separar secciones y quitar textos <span class="arw">▶</span></summary>
+    <div class="dbody">
+      <div class="prompt-box">
+        <pre class="prompt-text">Separa esta landing page en imágenes individuales. Cada sección debe ser una imagen separada en aspect ratio 16:9. En cada imagen quita todos los textos, botones, menús, logos e interfaces. Deja solamente el fondo visual y los elementos gráficos principales de cada sección. La idea es usar estas imágenes como fondos o bases visuales, y después agregar los textos, botones y elementos de interfaz con HTML/CSS. Cada sección debe mantener el mismo estilo visual, pero funcionar de forma independiente.</pre>
+      </div>
+      <button class="copy-btn" type="button">📋 Copiar PROMPT 2</button>
+      <div class="callout co-warn" style="margin-bottom:0"><span class="ci">🧽</span><div><div class="ct">Limpieza de ghosting</div><p>Exigir la eliminación de textos, botones y logos evita elementos “quemados” o artefactos tipográficos en el fondo que arruinarían la profesionalidad del sitio al colocar el texto real encima.</p></div></div>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="pn">PROMPT 3</span> Animar una sección <span class="arw">▶</span></summary>
+    <div class="dbody">
+      <div class="prompt-box">
+        <pre class="prompt-text">Anima esta imagen de forma sutil y elegante. Solo deben moverse los elementos visuales que tengan sentido según la escena: fondo, luces, partículas, objetos flotantes, agua, nubes, humo, energía, personajes o elementos ambientales. El movimiento debe ser lento, natural y profesional. No muevas ni deformes textos, logos, botones o elementos de interfaz si aparecen. Mantén la composición original y evita cambios bruscos. El resultado debe funcionar como un video corto de fondo para una sección web.</pre>
+      </div>
+      <button class="copy-btn" type="button">📋 Copiar PROMPT 3</button>
+      <div class="callout co-ok" style="margin-bottom:0"><span class="ci">🔂</span><div><div class="ct">Ejecución técnica</div><p>720p · 4 segundos · sin audio · modo <strong>First and Last Frame</strong> subiendo la misma imagen en ambos puntos para un loop sin saltos bruscos. Peso objetivo ≈ 880 KB.</p></div></div>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="pn">PROMPT 4</span> Crear la web usando la maqueta y los assets <span class="arw">▶</span></summary>
+    <div class="dbody">
+      <div class="prompt-box">
+        <pre class="prompt-text">En la carpeta del proyecto tienes una maqueta visual y varios archivos de imagen o video que corresponden a las secciones de la landing page. Necesito que crees una landing page de alta calidad basándote en la maqueta. Usa la maqueta como referencia principal para entender: estructura, estilo visual, colores, composición, textos, jerarquía y espaciado. Cada imagen o video debe usarse como fondo o base visual de su sección correspondiente. Los textos, botones, menús, tarjetas y elementos de interfaz deben hacerse en HTML/CSS, no como parte fija de la imagen. La web debe verse profesional, moderna, responsive y fiel a la maqueta.</pre>
+      </div>
+      <button class="copy-btn" type="button">📋 Copiar PROMPT 4</button>
+      <div class="callout co-info" style="margin-bottom:0"><span class="ci">🗂️</span><div><div class="ct">Requisito previo</div><p>Organiza la carpeta local numerando los archivos (Sección 1, Sección 2, Video 1, etc.) para reducir la fricción en la interpretación de la IA.</p></div></div>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="pn">PROMPT 5</span> Convertirlo en una app lista para publicar <span class="arw">▶</span></summary>
+    <div class="dbody">
+      <div class="prompt-box">
+        <pre class="prompt-text">Convierte este diseño en una aplicación web moderna usando $$Next.js / React / HTML y CSS / la tecnología que corresponda$$. Usa el diseño actual como página principal. Mantén la estética, estructura, fondos, videos, textos, botones y secciones lo más fiel posible a la maqueta. La app debe ser responsive, limpia y fácil de seguir editando. Organiza bien los archivos y componentes. No agregues complejidad innecesaria. El objetivo es tener una versión funcional de la landing page lista para publicar o seguir mejorando.</pre>
+      </div>
+      <button class="copy-btn" type="button">📋 Copiar PROMPT 5</button>
+      <div class="callout co-ok" style="margin-bottom:0"><span class="ci">🚀</span><div><div class="ct">Despliegue</div><p>Source Control en Antigravity ID → repositorio de GitHub → conectar GitHub con Hostinger mediante la opción <strong>App Web de Node</strong>.</p></div></div>
+    </div>
+  </details>
+</section>
+
+<!-- ==================== RECURSOS ==================== -->
+<section class="page" id="recursos">
+  <div class="sec-head">
+    <div class="sec-icon">🧰</div>
+    <div><div class="sec-kicker">Capítulo 9</div><h2>Vídeo y Recursos Técnicos</h2></div>
+  </div>
+  <p class="sec-lead">El material audiovisual de referencia y el ecosistema completo de herramientas que sostiene el método.</p>
+
+  <div class="card">
+    <h4>🎥 Vídeo Tutorial</h4>
+    <p><strong>“Copia mi Método para Crear Increíbles Webs Animadas con IA”</strong></p>
+    <p style="color:var(--muted);font-size:.92rem;margin-bottom:0">El documento fuente referencia este vídeo tutorial por su título; no se incluye un enlace URL en el material original.</p>
+  </div>
+
+  <h3>Ecosistema de Herramientas</h3>
+  <div class="grid g2">
+    <div class="mini"><span class="ic">📌</span><h4>Pinterest</h4><p>Búsqueda de referencialidad visual.</p></div>
+    <div class="mini"><span class="ic">🎨</span><h4>Jenspark</h4><p>Modelos de difusión e imagen-a-video (Looping).</p></div>
+    <div class="mini"><span class="ic">🤖</span><h4>Antigravity ID</h4><p>Desarrollo asistido por IA (Gemini Flash).</p></div>
+    <div class="mini"><span class="ic">🐙</span><h4>GitHub</h4><p>Control de versiones y Source Control.</p></div>
+    <div class="mini"><span class="ic">🌐</span><h4>Hostinger</h4><p>Hosting profesional para aplicaciones Node.js / Next.js.</p></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <caption style="caption-side:top;text-align:left;padding:12px 14px;color:var(--muted);font-size:.9rem">Herramienta → fase en la que interviene</caption>
+      <thead><tr><th>Herramienta</th><th>Rol en el método</th><th>Fases</th></tr></thead>
+      <tbody>
+        <tr><td><b>Pinterest</b></td><td>Galería estratégica: términos “UI Design” / “Landing Page”; selección de imagen con resolución decente.</td><td>Fase 1</td></tr>
+        <tr><td><b>Jenspark</b></td><td>Integra DALL·E 3 para la maqueta; modelos de difusión e imagen-a-video para el looping.</td><td>Fases 2, 3 y 4</td></tr>
+        <tr><td><b>Antigravity ID</b></td><td>Editor de IA avanzado potenciado por Gemini Flash: visión multimodal y extensa ventana de contexto; botón Source Control.</td><td>Fases 5 y 6</td></tr>
+        <tr><td><b>GitHub</b></td><td>Repositorio de destino del código; cada push es una decisión de dirección que se refleja en vivo.</td><td>Fase 6</td></tr>
+        <tr><td><b>Hostinger</b></td><td>Despliegue mediante la opción App Web de Node conectada a GitHub.</td><td>Fase 6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co-info">
+    <span class="ci">🎬</span>
+    <div><div class="ct">Dobles de acción</div>
+    <p>En el Nivel Intuitivo del método, Jenspark y Gemini actúan como tus “dobles de acción”: ejecutan las tareas complejas bajo tu supervisión mientras tú mantienes el control total de la narrativa.</p></div>
+  </div>
+</section>
+
+<!-- ==================== PRO-TIPS Y GLOSARIO ==================== -->
+<section class="page" id="protips">
+  <div class="sec-head">
+    <div class="sec-icon">💡</div>
+    <div><div class="sec-kicker">Capítulo 10</div><h2>Pro-Tips y Glosario para el Docente</h2></div>
+  </div>
+  <p class="sec-lead">Consejos de rendimiento, reglas de iteración y el glosario en castellano simple para acompañar la docencia del método.</p>
+
+  <h3>Pro-Tips de Rendimiento</h3>
+  <div class="grid g3">
+    <div class="card"><h4>1 · Peso vs. Calidad</h4><p>Apunta siempre a videos de <strong>~880 KB (720p)</strong>. En la web, la <strong>velocidad de carga es tan importante como la estética</strong>.</p></div>
+    <div class="card"><h4>2 · Identificación de Secciones</h4><p>Si la IA de código se confunde, asegúrate de que tu maqueta tenga una clara <strong>alternancia de colores (oscuro/claro/oscuro)</strong>. Esto actúa como un <strong>ancla visual</strong> para el modelo de visión.</p></div>
+    <div class="card"><h4>3 · Iteración Obligatoria</h4><p>Si la IA ignora un elemento de la referencia, usa el comando <strong>“Remix”</strong> y sé más riguroso en el prompt. <strong>La IA es una herramienta de precisión, no de azar.</strong></p></div>
+  </div>
+
+  <div class="callout co-warn">
+    <span class="ci">🎯</span>
+    <div><div class="ct">Precisión, no azar</div>
+    <p>La dirección creativa implica no conformarse con la primera interpretación de la IA: itera con prompts más rigurosos hasta obtener fidelidad absoluta.</p></div>
+  </div>
+
+  <h3>Glosario en Castellano Simple</h3>
+  <input type="search" class="search" id="glosSearch" placeholder="🔎 Filtrar términos del glosario (ej.: loop, hero, asset…)" aria-label="Filtrar términos del glosario">
+  <div class="glos" id="glosGrid">
+    <div class="term" data-k="aspect ratio proporción ancho alto"><span class="en">Aspect Ratio</span><h4>Proporción</h4><p>Proporción entre ancho y alto. Fundamental para que la web no se vea deformada.</p></div>
+    <div class="term" data-k="hero section gancho inicial impacto"><span class="en">Hero Section</span><h4>Sección héroe</h4><p>El “gancho” inicial. La primera sección de impacto de tu web.</p></div>
+    <div class="term" data-k="prompt instrucción técnica ia"><span class="en">Prompt</span><h4>Instrucción</h4><p>La instrucción técnica que enviamos a la IA.</p></div>
+    <div class="term" data-k="looping animación infinita cortes visibles loop"><span class="en">Looping</span><h4>Bucle</h4><p>Animación infinita sin cortes visibles.</p></div>
+    <div class="term" data-k="framework marco de trabajo next.js estructura"><span class="en">Framework (Marco de trabajo)</span><h4>Marco de trabajo</h4><p>Estructura como Next.js que organiza el código de forma profesional.</p></div>
+    <div class="term" data-k="deployment despliegue publicar web"><span class="en">Deployment (Despliegue)</span><h4>Despliegue</h4><p>El acto de publicar tu web para que todo el mundo la vea.</p></div>
+    <div class="term" data-k="asset archivo imagen video icono"><span class="en">Asset</span><h4>Activo</h4><p>Cualquier archivo (imagen, video, icono) que compone tu web.</p></div>
+  </div>
+  <p class="no-res" id="glosEmpty" style="display:none">No hay términos que coincidan con el filtro.</p>
+
+  <h3>Ejercicio de autoevaluación</h3>
+  <p>Responde mentalmente y despliega cada solución para contrastarla con el método.</p>
+  <details>
+    <summary><span class="pn">Q1</span> ¿Por qué se configura el aspect ratio en 1:2 o 9:16? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">Porque esto fuerza a la IA a generar una página “larga” que contenga el flujo completo de la landing page.</p></div>
+  </details>
+  <details>
+    <summary><span class="pn">Q2</span> ¿Por qué es CRÍTICO intercalar secciones oscuras con claras? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">Porque el contraste visual no solo es estético: facilita enormemente a la IA de código (Gemini) identificar dónde termina una sección y empieza la siguiente. Actúa como ancla visual para el modelo de visión.</p></div>
+  </details>
+  <details>
+    <summary><span class="pn">Q3</span> ¿Qué es la limpieza de ghosting y qué evita? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">Es exigir la eliminación de textos, botones y logos de cada sección segmentada. Evita que queden elementos visuales “quemados” o artefactos tipográficos en el fondo que arruinarían la profesionalidad del sitio cuando pongamos el texto real encima.</p></div>
+  </details>
+  <details>
+    <summary><span class="pn">Q4</span> ¿Cómo se garantiza un loop continuo sin saltos bruscos? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">Utilizando el modo de “Primer y Último Frame” (First and Last Frame) y subiendo la misma imagen para ambos puntos, de modo que el video comience y termine igual.</p></div>
+  </details>
+  <details>
+    <summary><span class="pn">Q5</span> ¿Por qué se elige Gemini Flash para el ensamblaje? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">Por sus capacidades de visión multimodal y su extensa ventana de contexto, que le permiten “ver” la maqueta maestra original y entender la relación entre los assets para replicarlos con precisión.</p></div>
+  </details>
+  <details>
+    <summary><span class="pn">Q6</span> ¿Cuál es el flujo de despliegue completo? <span class="arw">▶</span></summary>
+    <div class="dbody"><p style="margin:0">1) Usar el botón de “Source Control” en Antigravity ID para publicar el código directamente en un repositorio de GitHub. 2) Conectar GitHub con Hostinger usando la opción de App Web de Node.</p></div>
+  </details>
+</section>
+
+<!-- ==================== FUENTES ==================== -->
+<section class="page" id="fuentes">
+  <div class="sec-head">
+    <div class="sec-icon">🔗</div>
+    <div><div class="sec-kicker">Capítulo 11</div><h2>Fuentes y Verificación</h2></div>
+  </div>
+  <p class="sec-lead">Trazabilidad completa del contenido técnico utilizado en este tutorial.</p>
+
+  <div class="card">
+    <h4>📄 Declaración de fuente</h4>
+    <p>Este tutorial ha sido desarrollado utilizando el <strong>100 % de la información técnica proporcionada por Rodrigo Olivares</strong> en su metodología <strong>“Crea con IA”</strong>, incluyendo los <strong>prompts maestros</strong> y las <strong>especificaciones de herramientas</strong> de la lección original.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="mini"><span class="ic">🗂️</span><h4>Documento fuente</h4><p>TUTORIAL-MAESTRO-CR.txt — “Tutorial Maestro: Creación de Webs Animadas de Alto Impacto con Inteligencia Artificial”.</p></div>
+    <div class="mini"><span class="ic">👤</span><h4>Autoría del método</h4><p>Rodrigo Olivares · Metodología “Crea con IA”.</p></div>
+    <div class="mini"><span class="ic">🎥</span><h4>Vídeo de referencia</h4><p>“Copia mi Método para Crear Increíbles Webs Animadas con IA”.</p></div>
+    <div class="mini"><span class="ic">🧰</span><h4>Ecosistema verificado</h4><p>Pinterest · Jenspark · Antigravity ID · GitHub · Hostinger.</p></div>
+  </div>
+
+  <h3>Contenidos verificados del documento</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Bloque del documento original</th><th>Estado en este tutorial</th></tr></thead>
+      <tbody>
+        <tr><td>1. Sinopsis y estrategia de diseño</td><td>Íntegro · sección <b>Sinopsis</b></td></tr>
+        <tr><td>2. Fase 1 · Búsqueda de referencialidad + Regla de los 3 Niveles</td><td>Íntegro · sección <b>Fase 1</b></td></tr>
+        <tr><td>3. Fase 2 · Generación de la maqueta maestra</td><td>Íntegro · sección <b>Fase 2</b></td></tr>
+        <tr><td>4. Fase 3 · Segmentación y limpieza de assets + “Asset Limpio”</td><td>Íntegro · sección <b>Fase 3</b></td></tr>
+        <tr><td>5. Fase 4 · Animación cinemática y looping</td><td>Íntegro · sección <b>Fase 4</b></td></tr>
+        <tr><td>6. Fase 5 · Desarrollo y ensamblaje con Antigravity ID + AI-Driven Coding</td><td>Íntegro · sección <b>Fase 5</b></td></tr>
+        <tr><td>7. Fase 6 · Conversión a app y despliegue profesional</td><td>Íntegro · sección <b>Fase 6</b></td></tr>
+        <tr><td>8. Librería de prompts maestros (PROMPT 1 a PROMPT 5)</td><td>Íntegro y literal · sección <b>Prompts Maestros</b></td></tr>
+        <tr><td>9. Vídeo y recursos técnicos</td><td>Íntegro · sección <b>Recursos</b></td></tr>
+        <tr><td>10. Pro-tips y glosario para el docente</td><td>Íntegro · sección <b>Pro-Tips y Glosario</b></td></tr>
+        <tr><td>11. Fuentes y verificación</td><td>Íntegro · sección <b>Fuentes</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout co-info">
+    <span class="ci">🔒</span>
+    <div><div class="ct">Sin información externa</div>
+    <p>No se han añadido datos, enlaces ni herramientas ajenas al documento fuente. El vídeo tutorial se referencia únicamente por su título, tal y como aparece en el original.</p></div>
+  </div>
+</section>
+
+<!-- ==================== CRÉDITOS ==================== -->
+<section class="page" id="creditos">
+  <div class="cover-wrap">
+    <svg class="cover" viewBox="0 0 1600 900" role="img" aria-label="Portada animada del tutorial (misma ilustración que en Inicio): flujo de creación de webs animadas con IA.">
+      <use href="#cover-art"/>
+    </svg>
+  </div>
+
+  <div class="sec-head">
+    <div class="sec-icon">⭐</div>
+    <div><div class="sec-kicker">Créditos</div><h2>Tutorial Maestro: Creación de Webs Animadas de Alto Impacto con Inteligencia Artificial</h2></div>
+  </div>
+
+  <div class="credit-box">
+    <span class="hero-badge" style="margin-bottom:6px"><span class="dot"></span> Documento educativo interactivo</span>
+    <div class="au">Rubén Sbarsky</div>
+    <p style="color:var(--muted);margin-bottom:16px">Autoría y desarrollo del tutorial HTML interactivo · Dark UI técnico</p>
+    <div class="stamp" style="justify-content:center">
+      <span class="chip">📅 FECHA: <b>07/09/2026</b></span>
+      <span class="chip">🕒 HORA: <b>08:20:08</b></span>
+    </div>
+    <p class="latin">Fiat iustitia, ruat caelum.</p>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h4>🎓 Indicación educativa</h4>
+    <p style="margin-bottom:0">📚 Este tutorial tiene <strong>exclusivamente fines educativos y de divulgación</strong>. Todo el contenido técnico procede de la metodología <strong>“Crea con IA”</strong> de <strong>Rodrigo Olivares</strong>, incluyendo los prompts maestros y las especificaciones de herramientas de la lección original. La portada animada que aparece en esta pestaña es <strong>exactamente la misma</strong> que la de INICIO, y continúa animándose.</p>
+  </div>
+
+  <div class="grid g3">
+    <div class="mini"><span class="ic">📖</span><h4>Contenido fuente</h4><p>Rodrigo Olivares · metodología “Crea con IA”.</p></div>
+    <div class="mini"><span class="ic">🖥️</span><h4>Formato</h4><p>SPA autónoma: HTML + CSS + JavaScript + SVG en un único archivo, sin conexión a Internet.</p></div>
+    <div class="mini"><span class="ic">🎬</span><h4>Portada animada</h4><p>SVG 16:9 reutilizado mediante <code style="color:var(--accent)">&lt;symbol&gt;</code> + <code style="color:var(--accent)">&lt;use&gt;</code> en INICIO y CRÉDITOS.</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: <span class="fx">Rubén Sbarsky</span></p>
+  <p>📅 FECHA: <span class="fx">07/09/2026</span> · Hora: <span class="fx">08:20:08</span></p>
+  <p class="lat">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" type="button" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ NAVEGACIÓN SPA ============ */
+  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var toTop = document.getElementById('toTop');
+  var progressBar = document.getElementById('progressBar');
+
+  function restartCovers(){
+    var covers = document.querySelectorAll('svg.cover');
+    for(var i=0;i<covers.length;i++){
+      try{
+        if(covers[i].getCurrentTime){ covers[i].setCurrentTime(0); }
+        if(covers[i].unpauseAnimations){ covers[i].unpauseAnimations(); }
+      }catch(e){}
+    }
+  }
+
+  function showPage(id){
+    var found=false;
+    pages.forEach(function(p){
+      var on = (p.id===id);
+      p.classList.toggle('active', on);
+      if(on) found=true;
+    });
+    if(!found){ pages[0].classList.add('active'); id='home'; }
+    navBtns.forEach(function(b){
+      var on = b.getAttribute('data-target')===id;
+      b.classList.toggle('active', on);
+      if(on){
+        var ni=document.getElementById('navInner');
+        try{
+          var target=b.offsetLeft-(ni.clientWidth/2)+(b.clientWidth/2);
+          ni.scrollTo({left:target,behavior:'smooth'});
+        }catch(e){ ni.scrollLeft=b.offsetLeft-60; }
+      }
+    });
+    window.scrollTo({top:0,behavior:'auto'});
+    updateProgress();
+    if(id==='home'||id==='creditos'){ restartCovers(); }
+  }
+
+  navBtns.forEach(function(b){
+    b.addEventListener('click',function(){ showPage(b.getAttribute('data-target')); });
+  });
+
+  /* ============ BARRA DE PROGRESO ============ */
+  function updateProgress(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max>0 ? (window.pageYOffset||h.scrollTop)/max*100 : 0;
+    if(pct<0) pct=0; if(pct>100) pct=100;
+    progressBar.style.width = pct.toFixed(2)+'%';
+    var active = document.querySelector('.page.active');
+    var maxA = active ? active.scrollHeight - active.clientHeight : 0;
+    if(active && maxA>40){
+      var p2 = (window.pageYOffset||0)/maxA*100;
+      if(p2>100)p2=100; if(p2<0)p2=0;
+      progressBar.style.width = Math.max(pct,p2).toFixed(2)+'%';
+    }
+    toTop.classList.toggle('show',(window.pageYOffset||0)>260);
+  }
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  window.addEventListener('resize',updateProgress);
+
+  toTop.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  /* ============ STEPPER DE FASES (controles bajo el diagrama) ============ */
+  var phases = [
+    {n:1,label:'Referencialidad',short:'FASE 1 · REFERENCIALIDAD (INSPIRACIÓN)',pill:'Pinterest',
+     desc:'Empezar desde un lienzo en blanco es una ineficiencia técnica. Utiliza Pinterest como galería estratégica con términos como “UI Design” o “Landing Page” y selecciona una imagen con resolución decente. No busques copiar: extrae patrones de éxito visual que resuenen con tu marca.',
+     tool:'Pinterest · galería estratégica', out:'Imagen de referencia con resolución decente', prompt:'— (prepara el input del PROMPT 1)'},
+    {n:2,label:'Maqueta maestra',short:'FASE 2 · GENERACIÓN DE LA MAQUETA MAESTRA',pill:'Jenspark · DALL·E 3',
+     desc:'Sube la referencia a Jenspark (integra DALL·E 3) y aplica el PROMPT 1. Configura el aspect ratio en 1:2 o 9:16 para forzar una página “larga” con el flujo completo. Es CRÍTICO instruir la alternancia de secciones oscuras y claras. Si el primer diseño no es fiel, aplica Remix con un prompt más riguroso exigiendo fidelidad absoluta.',
+     tool:'Jenspark (DALL·E 3)', out:'Maqueta larga con secciones bien diferenciadas', prompt:'PROMPT 1'},
+    {n:3,label:'Assets limpios',short:'FASE 3 · SEGMENTACIÓN Y LIMPIEZA DE ASSETS',pill:'16:9 · sin ghosting',
+     desc:'“Despiezar” el diseño: divide la maqueta larga en imágenes individuales 16:9 (PROMPT 2) y exige la eliminación de textos, botones, menús, logos e interfaces. Separar el fondo visual del contenido funcional permite que el texto sea editable, accesible y responsive. El resultado es un asset limpio: fondo puro listo para inyectarse como contenedor CSS.',
+     tool:'Jenspark · segmentación de imágenes', out:'Fondos 16:9 limpios, uno por sección', prompt:'PROMPT 2'},
+    {n:4,label:'Animación y loop',short:'FASE 4 · ANIMACIÓN CINEMÁTICA Y LOOPING',pill:'720p · 4 s · ≈880 KB',
+     desc:'El movimiento sutil separa una web común de una de clase mundial y aumenta la retención y la percepción premium. Usa modelos de Video IA en 720p y el modo “Primer y Último Frame” subiendo la misma imagen en ambos puntos para eliminar saltos bruscos. Anima partículas, rotación de planetas o flotación sutil durante 4 segundos y siempre sin audio (PROMPT 3).',
+     tool:'Video IA (imagen-a-vídeo) · Looping', out:'Vídeos de fondo en loop continuo de ~880 KB', prompt:'PROMPT 3'},
+    {n:5,label:'Código y ensamblaje',short:'FASE 5 · DESARROLLO Y ENSAMBLAJE CON ANTIGRAVITY ID',pill:'Gemini Flash',
+     desc:'La visión se convierte en código con Antigravity ID potenciado por Gemini Flash, elegido por su visión multimodal y su extensa ventana de contexto: puede “ver” la maqueta maestra y entender la relación entre los assets. Antes de codificar, numera los archivos (Sección 1, Sección 2, Video 1…) para reducir la fricción de interpretación. Con el PROMPT 4 la IA copia fielmente el copy, la jerarquía tipográfica y los espaciados.',
+     tool:'Antigravity ID · Gemini Flash', out:'Landing page HTML/CSS responsive y fiel a la maqueta', prompt:'PROMPT 4'},
+    {n:6,label:'App y despliegue',short:'FASE 6 · CONVERSIÓN A APP Y DESPLIEGUE PROFESIONAL',pill:'Next.js · GitHub · Hostinger',
+     desc:'El paso final es la escalabilidad: pasar de HTML estático a Next.js (PROMPT 5) permite un manejo de componentes más profesional y rendimiento optimizado. Publica el código con el botón “Source Control” de Antigravity ID en un repositorio de GitHub y conecta GitHub con Hostinger mediante la opción App Web de Node. Cada push es una decisión de dirección en vivo: pasas de diseñador a Product Owner.',
+     tool:'Antigravity ID → GitHub → Hostinger', out:'Aplicación web publicada y editable', prompt:'PROMPT 5'}
+  ];
+
+  var track=document.getElementById('flowTrack');
+  var fsPrev=document.getElementById('fsPrev'), fsNext=document.getElementById('fsNext'),
+      fsReset=document.getElementById('fsReset'), fsSlider=document.getElementById('fsSlider'),
+      fsInd=document.getElementById('fsInd'), fsPanel=document.getElementById('fsPanel');
+  var current=0;
+
+  function buildTrack(){
+    track.innerHTML='';
+    phases.forEach(function(p,i){
+      var d=document.createElement('div');
+      d.className='fnode'; d.setAttribute('role','listitem');
+      d.innerHTML='<div class="fcircle">'+p.n+'</div><div class="flabel">'+p.label+'</div>';
+      d.style.cursor='pointer';
+      d.addEventListener('click',function(){ setStep(i); });
+      track.appendChild(d);
+    });
+  }
+
+  function setStep(i){
+    if(i<0)i=0; if(i>phases.length-1)i=phases.length-1;
+    current=i;
+    var nodes=track.children;
+    for(var k=0;k<nodes.length;k++){
+      nodes[k].classList.toggle('active',k===i);
+      nodes[k].classList.toggle('done',k<i);
+    }
+    fsSlider.value=i;
+    fsInd.innerHTML='Fase <b>'+(i+1)+'</b> de '+phases.length;
+    fsPrev.disabled=(i===0);
+    fsNext.disabled=(i===phases.length-1);
+    var p=phases[i];
+    fsPanel.innerHTML=
+      '<div class="sp-top"><span class="pill p1">Movimiento '+(i+1)+' de '+phases.length+'</span>'+
+      '<span class="pill p2">'+p.pill+'</span><span class="pill p3">'+p.short+'</span></div>'+
+      '<h4>'+p.short+'</h4><p>'+p.desc+'</p>'+
+      '<div class="kv">'+
+        '<div><span>Herramienta</span><b>'+p.tool+'</b></div>'+
+        '<div><span>Entregable</span><b>'+p.out+'</b></div>'+
+        '<div><span>Prompt asociado</span><b>'+p.prompt+'</b></div>'+
+      '</div>';
+  }
+
+  buildTrack(); setStep(0);
+  fsPrev.addEventListener('click',function(){setStep(current-1);});
+  fsNext.addEventListener('click',function(){setStep(current+1);});
+  fsReset.addEventListener('click',function(){setStep(0);});
+  fsSlider.addEventListener('input',function(){setStep(parseInt(fsSlider.value,10));});
+
+  /* ============ COPIAR PROMPTS ============ */
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var box=btn.parentElement.querySelector('.prompt-text');
+      var txt=box?box.textContent:'';
+      var ok=function(){
+        var old=btn.textContent;
+        btn.textContent='✅ Copiado'; btn.classList.add('done');
+        setTimeout(function(){btn.textContent=old;btn.classList.remove('done');},1800);
+      };
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt).then(ok).catch(fallback);
+      } else { fallback(); }
+      function fallback(){
+        var ta=document.createElement('textarea');
+        ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        try{document.execCommand('copy'); ok();}catch(e){ btn.textContent='⚠️ Copia manual'; }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* ============ DEMO ASPECT RATIO ============ */
+  var ratioMock=document.getElementById('ratioMock'), ratioNote=document.getElementById('ratioNote');
+  var ratioTexts={
+    r11:'Formato <b>1:1</b>: no es la configuración indicada por el método para la maqueta maestra. El método especifica <b>1:2 o 9:16</b> para forzar una página “larga” con el flujo completo de la landing page.',
+    r12:'Formato <b>1:2</b>: fuerza a la IA a generar una página “larga” que contenga el flujo completo de la landing page (hero; beneficios/servicios/características; sección visual intermedia; prueba social/casos de uso/estadísticas; llamada final a la acción).',
+    r916:'Formato <b>9:16</b>: al igual que 1:2, fuerza a la IA a generar una página “larga” con el flujo completo de la landing page y secciones bien diferenciadas, fáciles de separar después.'
+  };
+  document.querySelectorAll('.tbtn[data-ratio]').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.tbtn[data-ratio]').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on');
+      var r=b.getAttribute('data-ratio');
+      ratioMock.className='mock '+r;
+      ratioNote.innerHTML=ratioTexts[r];
+    });
+  });
+
+  /* ============ DEMO ALTERNANCIA ============ */
+  var altMock=document.getElementById('altMock'), altNote=document.getElementById('altNote');
+  var altOn=document.getElementById('altOn'), altOff=document.getElementById('altOff');
+  function paintAlt(alternate){
+    var secs=altMock.querySelectorAll('.msec');
+    for(var i=0;i<secs.length;i++){
+      secs[i].classList.remove('dark','light','mono');
+      if(alternate){ secs[i].classList.add(i%2===0?'dark':'light'); }
+      else { secs[i].classList.add('mono'); }
+    }
+    if(alternate){
+      altNote.innerHTML='<b>Con alternancia:</b> el contraste visual no solo es estético; facilita enormemente a la IA de código (Gemini) identificar dónde termina una sección y empieza la siguiente. Es un ancla visual para el modelo de visión (oscuro/claro/oscuro).';
+    }else{
+      altNote.innerHTML='<b>Sin alternancia:</b> si la IA de código se confunde, el método indica asegurar una clara alternancia de colores (oscuro/claro/oscuro) en la maqueta. Sin ese contraste se pierde el ancla visual que delimita las secciones.';
+    }
+  }
+  altOn.addEventListener('click',function(){altOn.classList.add('on');altOff.classList.remove('on');paintAlt(true);});
+  altOff.addEventListener('click',function(){altOff.classList.add('on');altOn.classList.remove('on');paintAlt(false);});
+  paintAlt(true);
+
+  /* ============ CHECKLIST ============ */
+  var checks=[
+    'Referencia seleccionada en Pinterest con resolución decente (términos “UI Design” / “Landing Page”).',
+    'Aspect ratio de la maqueta configurado en 1:2 o 9:16.',
+    'Secciones alternadas oscuro / claro en la maqueta maestra (principio de alternancia).',
+    'Remix aplicado con un prompt más riguroso si el primer diseño no fue fiel a la referencia.',
+    'Maqueta segmentada en imágenes individuales de 16:9 (PROMPT 2).',
+    'Ghosting eliminado: sin textos, botones, menús, logos ni interfaces en los fondos.',
+    'Vídeo generado en 720p, 4 segundos y siempre sin audio (PROMPT 3).',
+    'Loop configurado con First and Last Frame subiendo la misma imagen en ambos puntos.',
+    'Peso del vídeo optimizado en torno a ~880 KB.',
+    'Carpeta local numerada antes de codificar: Sección 1, Sección 2, Video 1, etc.',
+    'Textos, botones, menús y tarjetas hechos en HTML/CSS (no fijados en la imagen).',
+    'Contraste correcto del texto del encabezado sobre el background-video.',
+    'Código convertido a estructura React / Next.js (PROMPT 5).',
+    'Código publicado en GitHub con el botón Source Control de Antigravity ID.',
+    'GitHub conectado con Hostinger mediante la opción App Web de Node.'
+  ];
+  var cl=document.getElementById('checkList');
+  checks.forEach(function(t,i){
+    var l=document.createElement('label');
+    l.className='chk';
+    l.innerHTML='<input type="checkbox" id="chk'+i+'"><span>'+t+'</span>';
+    cl.appendChild(l);
+    l.querySelector('input').addEventListener('change',function(){
+      l.classList.toggle('ok',this.checked); updateCount();
+    });
+  });
+  document.getElementById('chkTotal').textContent=checks.length;
+  function updateCount(){
+    var all=cl.querySelectorAll('input'), n=0;
+    all.forEach(function(c){ if(c.checked)n++; });
+    document.getElementById('chkCount').textContent=n;
+    document.getElementById('chkMeter').style.width=(n/all.length*100)+'%';
+  }
+  updateCount();
+
+  /* ============ FILTRO GLOSARIO ============ */
+  var gs=document.getElementById('glosSearch'), terms=document.querySelectorAll('#glosGrid .term'), ge=document.getElementById('glosEmpty');
+  gs.addEventListener('input',function(){
+    var q=gs.value.toLowerCase().trim(), vis=0;
+    terms.forEach(function(t){
+      var hay=(t.textContent+' '+t.getAttribute('data-k')).toLowerCase();
+      var show = q==='' || hay.indexOf(q)>-1;
+      t.style.display = show?'':'none';
+      if(show)vis++;
+    });
+    ge.style.display = vis===0?'block':'none';
+  });
+
+  /* ============ TECLADO ============ */
+  document.addEventListener('keydown',function(e){
+    var act=document.querySelector('.page.active');
+    if(!act) return;
+    if(act.id==='sinopsis' && !/input|textarea/i.test(document.activeElement.tagName)){
+      if(e.key==='ArrowRight'){ setStep(current+1); }
+      if(e.key==='ArrowLeft'){ setStep(current-1); }
+    }
+  });
+
+  /* ============ MOVIMIENTO REDUCIDO ============ */
+  var rm = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function applyMotion(){
+    var covers=document.querySelectorAll('svg.cover');
+    for(var i=0;i<covers.length;i++){
+      try{
+        if(rm && rm.matches){ covers[i].pauseAnimations(); }
+        else { covers[i].unpauseAnimations(); }
+      }catch(e){}
+    }
+  }
+  if(rm){ if(rm.addEventListener) rm.addEventListener('change',applyMotion); else if(rm.addListener) rm.addListener(applyMotion); }
+  applyMotion();
+
+  /* ============ INICIO ============ */
+  updateProgress();
+  restartCovers();
+})();
+</script>
+</body>
+</html>
